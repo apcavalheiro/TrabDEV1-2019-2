@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { findClient, updateClient, createClient } from '../../api/API'
 import { AvForm, AvField } from 'availity-reactstrap-validation';
-import { Button, Container } from 'reactstrap';
+import { Button, Container, Row, Col, Alert } from 'reactstrap';
 
 const intialState = {
   id: '',
@@ -22,12 +22,17 @@ export default class ClientForm extends Component {
     const client = { email, nome, endereco }
     if (!(email || nome || endereco)) return
     if (!email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) return
-    if (id !== '') {
-      await updateClient(id, client)
-    } else {
-      await createClient(client)
+    try {
+      if (id !== '') {
+        await updateClient(id, client)
+      } else {
+        await createClient(client)
+      }
+      await this.props.history.push('/clients')
+    } catch (error) {
+      let { message } = error.response.data
+      this.setState({ errorMessage: message })
     }
-    await this.props.history.push('/clients')
   }
 
   async componentDidMount() {
@@ -52,11 +57,23 @@ export default class ClientForm extends Component {
       ...intialState
     })
   )
+  
+  onDismiss = () => {
+    document.location.reload(true);
+    this.setState({ visible: false, errorMessage: '' })
+  }
 
   render() {
-    let { nome, email, endereco } = this.state
+    let { nome, email, endereco, errorMessage } = this.state
     return (
       <Container>
+        <Row>
+          <Col>
+            <div style={{ margin: "50px" }}>
+              {errorMessage && <span><Alert color="danger" isOpen={this.state.visible} toggle={this.onDismiss}>{errorMessage}</Alert></span>}
+            </div>
+          </Col>
+        </Row>
         <AvForm onSubmit={this.handleSubmit}>
           <AvField name="nome" label="Nome" type="text" value={nome || ''} onChange={this.handleChange} validate={{
             required: { value: true, errorMessage: 'Campo obrigatório!' }

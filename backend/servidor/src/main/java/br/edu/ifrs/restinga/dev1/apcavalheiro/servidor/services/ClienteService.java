@@ -1,9 +1,7 @@
 package br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.services;
 
 import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.entities.Cliente;
-import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.entities.Recibo;
 import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.repositorys.ClienteRepository;
-import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.repositorys.ReciboRepository;
 import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.services.exception.DataIntegrityException;
 import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.services.exception.InvalidRequest;
 import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.services.exception.ObjectNotFound;
@@ -19,18 +17,6 @@ public class ClienteService {
 
     @Autowired
     private ClienteRepository clienteRepository;
-
-    @Autowired
-    private ReciboRepository reciboRepository;
-
-    public List<Recibo> buscarRecibosPorCliente(Integer id){
-        Cliente cliente = this.buscarCliente(id);
-        List<Recibo> recibos = this.reciboRepository.findByCliente(cliente);
-        if (recibos.isEmpty()) {
-            throw new ObjectNotFound("Nenhum recibo cadastrado para este cliente!");
-        }
-        return recibos;
-    }
 
     public Cliente buscarCliente(Integer id) {
         Optional<Cliente> cliente = this.clienteRepository.findById(id);
@@ -105,3 +91,4 @@ public class ClienteService {
         }
     }
 }
+

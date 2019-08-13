@@ -1,7 +1,6 @@
 package br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.controllers;
 
 import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.entities.Cliente;
-import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.entities.Recibo;
 import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.services.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,12 +13,6 @@ public class ClienteController {
 
     @Autowired
     private ClienteService clienteService;
-
-    @GetMapping("/{id}/recibos")
-    public ResponseEntity<Iterable<Recibo>> buscarRecibosPorCliente(@PathVariable Integer id) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(this.clienteService.buscarRecibosPorCliente(id));
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Cliente> buscarCliente(@PathVariable Integer id) {

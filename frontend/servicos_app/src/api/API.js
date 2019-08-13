@@ -3,37 +3,45 @@ import axios from 'axios';
 const baseUrlClients = "/api/clientes/"
 const baseUrlReceipts = "/api/recibos/"
 
-const updateClient = async (id, client) => {
-  return await axios.put(baseUrlClients + id, client)
-}
+const updateClient = async (id, client) => (
+  await axios.put(baseUrlClients + id, client)
+)
 
-const findClient = async (id) => {
-  return await axios.get(baseUrlClients + id)
-}
+const findClient = async (id) => (
+  await axios.get(baseUrlClients + id)
+)
 
-const listAllClients = async () => {
-  return await axios.get(baseUrlClients)
-}
+const listAllClients = async () => (
+  await axios.get(baseUrlClients)
+)
 
-const createClient = async (client) => {
-  return await axios.post(baseUrlClients, client)
-}
+const createClient = async (client) => (
+  await axios.post(baseUrlClients, client)
+)
 
-const removeClient = async (id) => {
-  return await axios.delete(baseUrlClients + id)
-}
+const removeClient = async (id) => (
+  await axios.delete(baseUrlClients + id)
+)
 
-const removeReceipt= async (id) => {
-  return await axios.delete(baseUrlReceipts + id)
-}
+const removeReceipt = async (id) => (
+  await axios.delete(baseUrlReceipts + id)
+)
 
-const listAllReceipts = async () => {
-  return await axios.get(baseUrlReceipts)
-}
+const listAllReceipts = async () => (
+  await axios.get(baseUrlReceipts)
+)
 
-const findReceipt = async (id) => {
-  return await axios.get(baseUrlReceipts + id)
-}
+const findReceipt = async (id) => (
+  await axios.get(baseUrlReceipts + id)
+)
+
+const createReceipt = async (receipt) => (
+  await axios.post(baseUrlReceipts, receipt)
+)
+
+const updateReceipt = async (id, receipt) => (
+  await axios.put(baseUrlReceipts + id, receipt)
+)
 
 export {
   updateClient,
@@ -43,5 +51,7 @@ export {
   findClient,
   listAllReceipts,
   removeReceipt,
-  findReceipt
+  findReceipt,
+  createReceipt,
+  updateReceipt
 }

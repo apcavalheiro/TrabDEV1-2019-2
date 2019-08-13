@@ -19,9 +19,9 @@ export default class ReceiptShow extends Component {
   }
 
   async componentDidMount() {
-    const { id } = this.props.match.params
-    if (id) {
-      const response = await findReceipt(id)
+    const { idReceipt } = this.props.match.params
+    if (idReceipt) {
+      const response = await findReceipt(idReceipt)
       this.setState({
         receipt: response.data
 
@@ -31,6 +31,7 @@ export default class ReceiptShow extends Component {
 
   render() {
     const { receipt, receipt: { cliente }, receipt: { servico } } = this.state
+    const moeda = servico.valor.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
     return (
       <ListGroup>
         <ListGroupItem active>
@@ -46,7 +47,7 @@ export default class ReceiptShow extends Component {
           <ListGroupItemHeading>Dados do Serviço:</ListGroupItemHeading>
           <ListGroupItemText>
             <strong>Descrição:</strong> {servico.descricao || ''}<br />
-            <strong>Valor R$:</strong> {servico.valor || ''}<br />
+            <strong>Valor:</strong> {moeda || ''}<br />
           </ListGroupItemText>
         </ListGroupItem>
         <ListGroupItem>

@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-import AppNavbar from '../components/templates/AppNavbar';
+import AppNavbar from '../components/templates/AppNavbar'
 import Home from '../components/home/Home'
 import ClientForm from '../components/client/ClientForm'
 import ClientList from '../components/client/ClientList'
@@ -17,8 +17,9 @@ const Routes = () => (
             <Route path='/clients/new' component={ClientForm} />
             <Route path='/clients/:id' component={ClientForm} />
             <Route path='/receipts' exact={true} component={ReceiptList} />
+            <Route path='/receipts/show/:idReceipt' component={ReceiptShow} />
+            <Route path='/receipts/:idReceipt' component={ReceiptForm} />
             <Route path='/receipts/new' component={ReceiptForm} />
-            <Route path='/receipts/show/:id' component={ReceiptShow} />
         </Switch>
     </Router>
 )
