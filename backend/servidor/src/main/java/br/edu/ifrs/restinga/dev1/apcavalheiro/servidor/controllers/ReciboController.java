@@ -40,8 +40,9 @@ public class ReciboController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Recibo> atualizarRecibo(@RequestBody Recibo recibo, @PathVariable Integer id) {
+    public ResponseEntity<Void> atualizarRecibo(@RequestBody Recibo recibo, @PathVariable Integer id) {
+        this.reciboService.atualizarRecibo(recibo, id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                .body(this.reciboService.atualizarRecibo(recibo, id));
+                .build();
     }
 }

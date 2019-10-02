@@ -20,7 +20,7 @@ export default class ClientForm extends Component {
   handleSubmit = async () => {
     const { email, nome, endereco, id } = this.state
     const client = { email, nome, endereco }
-    if (!(email || nome || endereco)) return
+    if (!email || !nome || !endereco) return
     if (!email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) return
     try {
       if (id !== '') {
@@ -57,7 +57,7 @@ export default class ClientForm extends Component {
       ...intialState
     })
   )
-  
+
   onDismiss = () => {
     document.location.reload(true);
     this.setState({ visible: false, errorMessage: '' })

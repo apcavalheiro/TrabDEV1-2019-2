@@ -12,8 +12,9 @@ public class Servico implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Integer id;
-    private String descricao;
-    private Double valor;
+    private String nome;
+    private String descricaoServico;
+    private String descricaoValor;
 
     public Servico() {
     }
@@ -28,20 +29,28 @@ public class Servico implements Serializable {
         this.id = id;
     }
 
-    public String getDescricao() {
-        return descricao;
+    public String getNome() {
+        return nome;
     }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
-    public Double getValor() {
-        return valor;
+    public String getDescricaoServico() {
+        return descricaoServico;
     }
 
-    public void setValor(Double valor) {
-        this.valor = valor;
+    public void setDescricaoServico(String descricaoServico) {
+        this.descricaoServico = descricaoServico;
+    }
+
+    public String getDescricaoValor() {
+        return descricaoValor;
+    }
+
+    public void setDescricaoValor(String descricaoValor) {
+        this.descricaoValor = descricaoValor;
     }
 
     @Override

@@ -24,6 +24,9 @@ export default class AppNavbar extends Component {
             <NavLink tag={Link} to="/">Início</NavLink>
           </NavItem>
           <NavItem>
+            <NavLink tag={Link} to="/services">Serviços</NavLink>
+          </NavItem>
+          <NavItem>
             <NavLink tag={Link} to="/clients">Clientes</NavLink>
           </NavItem>
           <NavItem>

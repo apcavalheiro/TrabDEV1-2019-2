@@ -1,10 +1,14 @@
 import React, { Component } from 'react'
-import { Button, ButtonGroup, Container, Table, Spinner, Alert, Row, Col, FormGroup, Input, Label } from 'reactstrap';
+import {
+  Button, ButtonGroup, Container, Table, Spinner,
+  Alert, Row, Col, FormGroup, Input, Card, CardTitle, CardText
+} from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { listAllReceipts, removeReceipt } from '../../api/API'
 
 const initialState = {
-  filterText: '',
+  filterData: '',
+  filterNome: '',
   isLoading: true,
   errorMessage: '',
   receipts: []
@@ -45,17 +49,21 @@ export default class ClientList extends Component {
   }
 
   render() {
-    const { isLoading, receipts, errorMessage, filterText } = this.state;
+    const { isLoading, receipts, errorMessage, filterData, filterNome } = this.state;
 
     const list = receipts
       .filter(r => {
-        return r.data.toLowerCase().indexOf(filterText.toLowerCase()) >= 0
+        return r.data.toLowerCase().indexOf(filterData.toLowerCase()) >= 0
+      })
+      .filter(r => {
+        return r.cliente.nome.toLowerCase().indexOf(filterNome.toLowerCase()) >= 0
       })
       .map(r => (
         <tr key={r.id}>
           <td>{r.data}</td>
           <td>{r.cliente.nome}</td>
-          <td>{r.servico.descricao}</td>
+          <td>{r.servico.nome}</td>
+          <td>{r.valor}</td>
           <td>
             <ButtonGroup>
               <Button size="sm" color="primary" tag={Link} to={"/receipts/" + r.id}>Editar</Button>
@@ -77,6 +85,7 @@ export default class ClientList extends Component {
           <th width="20%">Data</th>
           <th width="20%">Cliente</th>
           <th width="20%">Serviço</th>
+          <th width="20%">Valor</th>
           <th width="10%">Ações</th>
         </tr>
       </thead>
@@ -87,20 +96,30 @@ export default class ClientList extends Component {
 
     return (
       <Container fluid>
-        <h3>Serviços</h3>
+        <h3>Recibos</h3>
         <Row>
           <Col>
-            <div className="float-right">
-              <Button color="success" tag={Link} to="/receipts/new" >Adicionar Serviço</Button>
+            <div className="float-right"style={{ marginBottom: '15px' }}>
+              <Button color="success"  tag={Link} to="/receipts/new" >Gerar Recibo</Button>
             </div>
           </Col>
         </Row>
         <Row>
           <Col>
-            <FormGroup>
-              <Label for="nome">Buscar Serviço</Label>
-              <Input type="text" name="filterText" id="filterText" onChange={this.handleChange} placeholder="Buscar por data..." />
-            </FormGroup>
+            <Card body>
+              <CardTitle><h5>Buscar recibos por:</h5></CardTitle>
+              <CardText><h6>Data:</h6></CardText>
+              <FormGroup>
+                <Input type="text" name="filterData" id="filterData" onChange={this.handleChange}
+                  placeholder="DD/MM/AAAA" />
+              </FormGroup>
+              <CardText><h6>Nome do Cliente:</h6></CardText>
+              <FormGroup>
+                <Input type="text" name="filterNome" id="filterNome" onChange={this.handleChange}
+                  placeholder="Nome..." />
+              </FormGroup>
+            </Card>
+
           </Col>
         </Row>
         <Row>
@@ -114,4 +133,4 @@ export default class ClientList extends Component {
       </Container>
     )
   }
-}
+} 

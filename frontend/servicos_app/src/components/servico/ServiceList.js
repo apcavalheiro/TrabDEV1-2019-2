@@ -1,31 +1,33 @@
 import React, { Component } from 'react'
-import { Button, ButtonGroup, Container, Table, Spinner, Alert, Row,
-   Col, FormGroup, Input, Card, CardTitle } from 'reactstrap';
+import {
+  Button, ButtonGroup, Container, Table, Spinner, Alert, Row,
+  Col, FormGroup, Input, Card, CardTitle
+} from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { listAllClients, removeClient } from '../../api/API'
+import { listAllServices, removeService } from '../../api/API'
 
 const initialState = {
   filterText: '',
   isLoading: true,
   errorMessage: '',
-  clients: []
+  services: []
 }
 
-export default class ClientList extends Component {
+export default class ServiceList extends Component {
   state = { ...initialState }
 
   async componentDidMount() {
-    await this.listAllClients()
+    await this.listAllServices()
   }
 
-  listAllClients = async () => {
-    const { data } = await listAllClients()
-    this.setState({ clients: data, isLoading: false })
+  listAllServices = async () => {
+    const { data } = await listAllServices()
+    this.setState({ services: data, isLoading: false })
   }
 
   remove = async (id) => {
-    await removeClient(id).then(
-      () => this.listAllClients()
+    await removeService(id).then(
+      () => this.listAllServices()
     ).catch(
       error => {
         let { message } = error.response.data
@@ -33,6 +35,7 @@ export default class ClientList extends Component {
       }
     )
   }
+
 
   handleChange = ({ target }) => {
     const value = target.value
@@ -46,21 +49,21 @@ export default class ClientList extends Component {
   }
 
   render() {
-    const { isLoading, clients, errorMessage, filterText } = this.state;
+    const { isLoading, services, errorMessage, filterText } = this.state;
 
-    const list = clients
-      .filter(c => {
-        return c.nome.toLowerCase().indexOf(filterText.toLowerCase()) >= 0
+    const list = services
+      .filter(s => {
+        return s.nome.toLowerCase().indexOf(filterText.toLowerCase()) >= 0
       })
-      .map(c => (
-        <tr key={c.id}>
-          <td>{c.nome}</td>
-          <td>{c.email}</td>
-          <td>{c.endereco}</td>
+      .map(s => (
+        <tr key={s.id}>
+          <td>{s.nome}</td>
+          <td>{s.descricaoServico}</td>
+          <td>{s.descricaoValor}</td>
           <td>
             <ButtonGroup>
-              <Button size="sm" color="primary" tag={Link} to={"/clients/" + c.id}>Editar</Button>
-              <Button size="sm" color="danger" onClick={() => this.remove(c.id)}>Excluir</Button>
+              <Button size="sm" color="primary" tag={Link} to={"/services/" + s.id}>Editar</Button>
+              <Button size="sm" color="danger" onClick={() => this.remove(s.id)}>Excluir</Button>
             </ButtonGroup>
           </td>
         </tr>
@@ -75,8 +78,8 @@ export default class ClientList extends Component {
       <thead>
         <tr>
           <th width="20%">Nome</th>
-          <th width="20%">Email</th>
-          <th width="20%">Endereço</th>
+          <th width="20%">Descrição Serviço</th>
+          <th width="20%">Descrição Valor</th>
           <th width="10%">Ações</th>
         </tr>
       </thead>
@@ -87,21 +90,21 @@ export default class ClientList extends Component {
 
     return (
       <Container fluid>
-        <h3>Clientes</h3>
+        <h3>Serviços</h3>
         <Row>
           <Col>
             <div className="float-right" style={{ marginBottom: '15px' }}>
-              <Button color="success" tag={Link} to="/clients/new" >Adicionar Cliente</Button>
+              <Button color="success" tag={Link} to="/services/new" >Adicionar Serviço</Button>
             </div>
           </Col>
         </Row>
         <Row>
           <Col>
             <Card body>
-              <CardTitle><h5>Buscar clientes por Nome:</h5></CardTitle>
+              <CardTitle><h5>Buscar serviços:</h5></CardTitle>
               <FormGroup>
                 <Input type="text" name="filterText" id="filterText" onChange={this.handleChange}
-                 placeholder="Nome..." />
+                  placeholder="Serviço..." />
               </FormGroup>
             </Card>
           </Col>
@@ -109,7 +112,8 @@ export default class ClientList extends Component {
         <Row>
           <Col>
             <div style={{ margin: "50px" }}>
-              {errorMessage && <span><Alert color="danger" isOpen={this.state.visible} toggle={this.onDismiss}>{errorMessage}</Alert></span>}
+              {errorMessage && <span><Alert color="danger" isOpen={this.state.visible}
+                toggle={this.onDismiss}>{errorMessage}</Alert></span>}
             </div>
           </Col>
         </Row>

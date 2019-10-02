@@ -6,14 +6,15 @@ export default class ReceiptShow extends Component {
   state = {
     receipt: {
       data: '',
+      valor: '',
       cliente: {
         nome: '',
         email: '',
         endereco: ''
       },
       servico: {
-        descricao: '',
-        valor: ''
+        descricaoValor: '',
+        descricaoServico: ''
       }
     }
   }
@@ -31,7 +32,7 @@ export default class ReceiptShow extends Component {
 
   render() {
     const { receipt, receipt: { cliente }, receipt: { servico } } = this.state
-    const moeda = servico.valor.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+    const moeda = receipt.valor.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
     return (
       <ListGroup>
         <ListGroupItem active>
@@ -46,8 +47,8 @@ export default class ReceiptShow extends Component {
         <ListGroupItem>
           <ListGroupItemHeading>Dados do Serviço:</ListGroupItemHeading>
           <ListGroupItemText>
-            <strong>Descrição:</strong> {servico.descricao || ''}<br />
-            <strong>Valor:</strong> {moeda || ''}<br />
+            <strong>Descrição do serviço:</strong> {servico.descricaoServico || ''}<br />
+            <strong>Descrição do valor:</strong> {servico.descricaoValor || ''}<br />
           </ListGroupItemText>
         </ListGroupItem>
         <ListGroupItem>
@@ -56,6 +57,12 @@ export default class ReceiptShow extends Component {
             <strong>Nome:</strong> {cliente.nome || ''}<br />
             <strong>E-Mail:</strong> {cliente.email || ''}<br />
             <strong>Endereço:</strong> {cliente.endereco || ''}
+          </ListGroupItemText>
+        </ListGroupItem>
+        <ListGroupItem>
+          <ListGroupItemHeading>Valor cobrado pelo serviço:</ListGroupItemHeading>
+          <ListGroupItemText>
+            <strong>Valor:</strong> {moeda || ''}<br />
           </ListGroupItemText>
         </ListGroupItem>
       </ListGroup>

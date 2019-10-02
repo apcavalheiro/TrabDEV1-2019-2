@@ -13,6 +13,7 @@ public class Recibo implements Serializable {
 
     private Integer id;
     private Date data;
+    private Double valor;
     private Cliente cliente;
     private Servico servico;
 
@@ -39,6 +40,14 @@ public class Recibo implements Serializable {
         this.data = data;
     }
 
+    public Double getValor() {
+        return valor;
+    }
+
+    public void setValor(Double valor) {
+        this.valor = valor;
+    }
+
     @ManyToOne
     public Cliente getCliente() {
         return cliente;
@@ -48,7 +57,7 @@ public class Recibo implements Serializable {
         this.cliente = cliente;
     }
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToOne
     public Servico getServico() {
         return servico;
     }
