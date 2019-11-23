@@ -50,6 +50,7 @@ export default class ServiceList extends Component {
 
   render() {
     const { isLoading, services, errorMessage, filterText } = this.state;
+    console.log(services)
 
     const list = services
       .filter(s => {
@@ -60,6 +61,7 @@ export default class ServiceList extends Component {
           <td>{s.nome}</td>
           <td>{s.descricaoServico}</td>
           <td>{s.descricaoValor}</td>
+          <td>{s.valorBase.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</td>
           <td>
             <ButtonGroup>
               <Button size="sm" color="primary" tag={Link} to={"/services/" + s.id}>Editar</Button>
@@ -80,6 +82,7 @@ export default class ServiceList extends Component {
           <th width="20%">Nome</th>
           <th width="20%">Descrição Serviço</th>
           <th width="20%">Descrição Valor</th>
+          <th width="20%">Valor Base</th>
           <th width="10%">Ações</th>
         </tr>
       </thead>

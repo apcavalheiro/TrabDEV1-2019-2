@@ -32,6 +32,12 @@ public class ServicoController {
                 .body(this.servicoService.buscarServico(id));
     }
 
+    @GetMapping("/buscar")
+    public ResponseEntity<Iterable<Servico>> buscarServicoPorNome(@RequestParam(required = true) String nome) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(this.servicoService.buscarServicoPorNome(nome));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Void> atualizarServico(@PathVariable Integer id,
                                                  @RequestBody Servico servico) {

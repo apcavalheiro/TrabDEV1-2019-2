@@ -65,7 +65,6 @@ export default class ReceiptForm extends Component {
 
     const { idReceipt } = this.props.match.params
     if (idReceipt) {
-      console.log("Aqui=>:" + idReceipt)
       const response = await findReceipt(idReceipt)
       const { data, valor, servico, cliente } = response.data
       const idService = servico.id

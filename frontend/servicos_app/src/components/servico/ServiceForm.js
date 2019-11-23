@@ -9,6 +9,7 @@ const intialState = {
   nome: '',
   descricaoServico: '',
   descricaoValor: '',
+  valorBase: ''
 }
 
 export default class ServiceForm extends Component {
@@ -18,9 +19,11 @@ export default class ServiceForm extends Component {
   }
 
   handleSubmit = async () => {
-    const { descricaoValor, descricaoServico, nome, id } = this.state
-    const service = { descricaoValor, descricaoServico, nome }
-    if (!descricaoValor || !descricaoServico || !nome) return
+    const { descricaoValor, descricaoServico, nome, id, valorBase } = this.state
+    if (!descricaoValor || !descricaoServico || !nome || !valorBase) return
+    if(valorBase < 0) return
+    const service = { descricaoValor, descricaoServico, nome, valorBase }
+
     try {
       if (id !== '') {
         await updateService(id, service)
@@ -38,10 +41,9 @@ export default class ServiceForm extends Component {
     const { id } = this.props.match.params
     if (id) {
       const response = await findService(id)
-      console.log(response.data)
-      let { descricaoServico, descricaoValor, nome } = response.data
+      let { descricaoServico, descricaoValor, nome, valorBase } = response.data
       this.setState({
-        id, descricaoServico, descricaoValor, nome
+        id, descricaoServico, descricaoValor, nome, valorBase
       })
     }
   }
@@ -64,7 +66,7 @@ export default class ServiceForm extends Component {
   }
 
   render() {
-    let { descricaoServico, descricaoValor, nome, errorMessage } = this.state
+    let { descricaoServico, descricaoValor, nome, valorBase, errorMessage } = this.state
     return (
       <Container>
         <Row>
@@ -88,6 +90,10 @@ export default class ServiceForm extends Component {
             value={descricaoValor || ''} onChange={this.handleChange} validate={{
               required: { value: true, errorMessage: 'Campo obrigatório!' }
             }} style={{ resize: "none" }} />
+          <AvField name="valorBase" label="Valor Base" type="number" value={valorBase || ''}
+            onChange={this.handleChange} validate={{
+              required: { value: true, errorMessage: 'Campo obrigatório!' }
+            }} />
           <div className="float-right">
             <Button type="button" onClick={this.handleClear} color="info" >Cancelar</Button>
             {' '}

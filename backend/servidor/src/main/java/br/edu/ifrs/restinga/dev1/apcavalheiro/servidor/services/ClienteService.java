@@ -31,6 +31,14 @@ public class ClienteService {
         return clientes;
     }
 
+    public List<Cliente> buscarClientePorNome(String nome) {
+        List<Cliente> clientes = this.clienteRepository.findByNomeContaining(nome);
+        if(clientes.isEmpty()){
+            throw new ObjectNotFound("Nenhum cliente cadastrado com este nome!");
+        }
+        return clientes;
+    }
+
     public void excluirCliente(Integer id) {
         Cliente cliente = this.buscarCliente(id);
         try {

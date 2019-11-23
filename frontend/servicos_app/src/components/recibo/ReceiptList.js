@@ -63,7 +63,7 @@ export default class ClientList extends Component {
           <td>{r.data}</td>
           <td>{r.cliente.nome}</td>
           <td>{r.servico.nome}</td>
-          <td>{r.valor}</td>
+          <td>{r.valor.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</td>
           <td>
             <ButtonGroup>
               <Button size="sm" color="primary" tag={Link} to={"/receipts/" + r.id}>Editar</Button>

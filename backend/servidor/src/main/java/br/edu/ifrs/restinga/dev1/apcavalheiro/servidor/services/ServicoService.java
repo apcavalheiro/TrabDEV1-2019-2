@@ -16,6 +16,13 @@ public class ServicoService {
     @Autowired
     private ServicoRepository servicoRepository;
 
+    public List<Servico> buscarServicoPorNome(String nome) {
+        List<Servico> servicos = this.servicoRepository.findByNomeContaining(nome);
+        if(servicos.isEmpty()){
+            throw new ObjectNotFound("Nenhum serviço cadastrado com este nome!");
+        }
+        return servicos;
+    }
     public Servico cadastrarServico(Servico servico) {
         Servico servicoSalvo = null;
         try {

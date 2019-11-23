@@ -15,6 +15,7 @@ public class Servico implements Serializable {
     private String nome;
     private String descricaoServico;
     private String descricaoValor;
+    private Double valorBase;
 
     public Servico() {
     }
@@ -51,6 +52,14 @@ public class Servico implements Serializable {
 
     public void setDescricaoValor(String descricaoValor) {
         this.descricaoValor = descricaoValor;
+    }
+
+    public Double getValorBase() {
+        return valorBase;
+    }
+
+    public void setValorBase(Double valorBase) {
+        this.valorBase = valorBase;
     }
 
     @Override

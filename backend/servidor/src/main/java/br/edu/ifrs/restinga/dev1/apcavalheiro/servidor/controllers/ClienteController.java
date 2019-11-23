@@ -26,6 +26,12 @@ public class ClienteController {
                 .body(this.clienteService.buscarClientes());
     }
 
+    @GetMapping("/buscar")
+    public ResponseEntity<Iterable<Cliente>> buscarClientePorNome(@RequestParam(required = true) String nome) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(this.clienteService.buscarClientePorNome(nome));
+    }
+
     @PostMapping
     public ResponseEntity<Cliente> cadastrarCliente(@RequestBody Cliente cliente) {
         return ResponseEntity.status(HttpStatus.CREATED)
