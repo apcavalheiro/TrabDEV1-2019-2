@@ -32,6 +32,9 @@ public class ClienteService {
     }
 
     public List<Cliente> buscarClientePorNome(String nome) {
+        if(nome.equals("")){
+            throw new ObjectNotFound("necessário um  nome para realizar a busca!");
+        }
         List<Cliente> clientes = this.clienteRepository.findByNomeContaining(nome);
         if(clientes.isEmpty()){
             throw new ObjectNotFound("Nenhum cliente cadastrado com este nome!");

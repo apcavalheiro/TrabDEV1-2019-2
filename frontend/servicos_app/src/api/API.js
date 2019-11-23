@@ -8,6 +8,11 @@ const updateClient = async (id, client) => (
   await axios.put(baseUrlClients + id, client)
 )
 
+const findClientsForName = async (nome) => (
+  await axios.get(`${baseUrlClients}/buscar?nome=${nome}`)
+)
+
+
 const findClient = async (id) => (
   await axios.get(baseUrlClients + id)
 )
@@ -25,6 +30,14 @@ const removeClient = async (id) => (
 )
 
 //recibos
+const findReceiptsForClient = async (valuePath, value) => (
+  await axios.get(`${baseUrlReceipts}/clientes?${valuePath}=${value}`)
+)
+
+const findReceiptsForService = async (valuePath, value) => (
+  await axios.get(`${baseUrlReceipts}/servicos?${valuePath}=${value}`)
+)
+
 const removeReceipt = async (id) => (
   await axios.delete(baseUrlReceipts + id)
 )
@@ -46,6 +59,10 @@ const updateReceipt = async (id, receipt) => (
 )
 
 //serviços
+const findServicesForName = async (nome) => (
+  await axios.get(`${baseUrlServices}/buscar?nome=${nome}`)
+)
+
 const removeService = async (id) => (
   await axios.delete(baseUrlServices + id)
 )
@@ -67,16 +84,20 @@ const updateService = async (id, service) => (
 )
 
 export {
+  findClientsForName,
   updateClient,
   listAllClients,
   removeClient,
   createClient,
   findClient,
+  findReceiptsForClient,
+  findReceiptsForService,
   listAllReceipts,
   removeReceipt,
   findReceipt,
   createReceipt,
   updateReceipt,
+  findServicesForName,
   listAllServices,
   findService,
   removeService,

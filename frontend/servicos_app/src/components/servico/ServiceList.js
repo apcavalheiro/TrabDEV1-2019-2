@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import {
   Button, ButtonGroup, Container, Table, Spinner, Alert, Row,
-  Col, FormGroup, Input, Card, CardTitle
+  Col, Input, Card, CardTitle, InputGroupAddon,InputGroup
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { listAllServices, removeService } from '../../api/API'
+import { listAllServices, removeService, findServicesForName } from '../../api/API'
 
 const initialState = {
   filterText: '',
@@ -22,6 +22,12 @@ export default class ServiceList extends Component {
 
   listAllServices = async () => {
     const { data } = await listAllServices()
+    this.setState({ services: data, isLoading: false })
+  }
+
+  findServicesForName = async () => {
+    const { filterText } = this.state
+    const { data } = await findServicesForName(filterText)
     this.setState({ services: data, isLoading: false })
   }
 
@@ -49,13 +55,8 @@ export default class ServiceList extends Component {
   }
 
   render() {
-    const { isLoading, services, errorMessage, filterText } = this.state;
-    console.log(services)
-
+    const { isLoading, services, errorMessage } = this.state;
     const list = services
-      .filter(s => {
-        return s.nome.toLowerCase().indexOf(filterText.toLowerCase()) >= 0
-      })
       .map(s => (
         <tr key={s.id}>
           <td>{s.nome}</td>
@@ -105,10 +106,13 @@ export default class ServiceList extends Component {
           <Col>
             <Card body>
               <CardTitle><h5>Buscar serviços:</h5></CardTitle>
-              <FormGroup>
+              <InputGroup>
                 <Input type="text" name="filterText" id="filterText" onChange={this.handleChange}
-                  placeholder="Serviço..." />
-              </FormGroup>
+                  placeholder="Nome serviço..." />
+                <InputGroupAddon addonType="append">
+                  <Button onClick={this.findServicesForName} color="info">Buscar Serviço!</Button>
+                </InputGroupAddon>
+              </InputGroup>
             </Card>
           </Col>
         </Row>

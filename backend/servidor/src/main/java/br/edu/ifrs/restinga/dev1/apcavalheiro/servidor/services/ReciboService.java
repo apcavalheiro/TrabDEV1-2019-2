@@ -31,6 +31,9 @@ public class ReciboService {
     }
 
     public Iterable<Recibo> buscarRecibosPorNomeCliente(String nome) {
+        if(nome.equals("")){
+            throw new ObjectNotFound("necessário um  nome para realizar a busca!");
+        }
         List<Recibo> recibos = this.reciboRepository.findByCliente_NomeContaining(nome);
         if (recibos.isEmpty()) {
             throw new ObjectNotFound("Nenhum recibo cadastrado para este cliente!");
@@ -39,6 +42,9 @@ public class ReciboService {
     }
 
     public Iterable<Recibo> buscarRecibosPorEmailCliente(String email) {
+        if(email.equals("")){
+            throw new ObjectNotFound("necessário um  email para realizar a busca!");
+        }
         List<Recibo> recibos = this.reciboRepository.findByCliente_EmailContaining(email);
         if (recibos.isEmpty()) {
             throw new ObjectNotFound("Nenhum recibo cadastrado este cliente!");

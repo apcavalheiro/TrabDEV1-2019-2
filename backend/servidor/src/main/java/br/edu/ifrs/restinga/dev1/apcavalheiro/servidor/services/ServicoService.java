@@ -17,6 +17,9 @@ public class ServicoService {
     private ServicoRepository servicoRepository;
 
     public List<Servico> buscarServicoPorNome(String nome) {
+        if(nome.equals("")){
+            throw new ObjectNotFound("necessário um  nome para realizar a busca!");
+        }
         List<Servico> servicos = this.servicoRepository.findByNomeContaining(nome);
         if(servicos.isEmpty()){
             throw new ObjectNotFound("Nenhum serviço cadastrado com este nome!");

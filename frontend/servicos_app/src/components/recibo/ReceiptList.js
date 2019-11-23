@@ -1,14 +1,17 @@
 import React, { Component } from 'react'
 import {
   Button, ButtonGroup, Container, Table, Spinner,
-  Alert, Row, Col, FormGroup, Input, Card, CardTitle, CardText
+  Alert, Row, Col, InputGroup, InputGroupAddon, Input, Card, CardTitle
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { listAllReceipts, removeReceipt } from '../../api/API'
+import {
+  listAllReceipts, removeReceipt,
+  findReceiptsForClient, findReceiptsForService
+} from '../../api/API'
 
 const initialState = {
-  filterData: '',
-  filterNome: '',
+  filterClient: '',
+  filterService: '',
   isLoading: true,
   errorMessage: '',
   receipts: []
@@ -19,6 +22,28 @@ export default class ClientList extends Component {
 
   async componentDidMount() {
     await this.listAllreceipts()
+  }
+
+  listAllReceiptsFilter = async () => {
+    const regex = /[0-9]/
+    const { filterClient, filterService } = this.state
+    if (filterService) {
+      if (regex.test(filterService)) {
+        const { data } = await findReceiptsForService('valor', parseFloat(filterService))
+        this.setState({ receipts: data, isLoading: false })
+      } else {
+        const { data } = await findReceiptsForService('nome', filterService)
+        this.setState({ receipts: data, isLoading: false })
+      }
+    } else {
+      if (filterClient.indexOf("@") != -1) {
+        const { data } = await findReceiptsForClient('email', filterClient)
+        this.setState({ receipts: data, isLoading: false })
+      } else {
+        const { data } = await findReceiptsForClient('nome', filterClient)
+        this.setState({ receipts: data, isLoading: false })
+      }
+    }
   }
 
   listAllreceipts = async () => {
@@ -52,12 +77,6 @@ export default class ClientList extends Component {
     const { isLoading, receipts, errorMessage, filterData, filterNome } = this.state;
 
     const list = receipts
-      .filter(r => {
-        return r.data.toLowerCase().indexOf(filterData.toLowerCase()) >= 0
-      })
-      .filter(r => {
-        return r.cliente.nome.toLowerCase().indexOf(filterNome.toLowerCase()) >= 0
-      })
       .map(r => (
         <tr key={r.id}>
           <td>{r.data}</td>
@@ -99,25 +118,31 @@ export default class ClientList extends Component {
         <h3>Recibos</h3>
         <Row>
           <Col>
-            <div className="float-right"style={{ marginBottom: '15px' }}>
-              <Button color="success"  tag={Link} to="/receipts/new" >Gerar Recibo</Button>
+            <div className="float-right" style={{ marginBottom: '15px' }}>
+              <Button color="success" tag={Link} to="/receipts/new" >Gerar Recibo</Button>
             </div>
           </Col>
         </Row>
         <Row>
           <Col>
             <Card body>
-              <CardTitle><h5>Buscar recibos por:</h5></CardTitle>
-              <CardText><h6>Data:</h6></CardText>
-              <FormGroup>
-                <Input type="text" name="filterData" id="filterData" onChange={this.handleChange}
-                  placeholder="DD/MM/AAAA" />
-              </FormGroup>
-              <CardText><h6>Nome do Cliente:</h6></CardText>
-              <FormGroup>
-                <Input type="text" name="filterNome" id="filterNome" onChange={this.handleChange}
-                  placeholder="Nome..." />
-              </FormGroup>
+              <CardTitle><h5>Buscar recibos por dados do cliente:</h5></CardTitle>
+              <InputGroup>
+                <Input type="text" name="filterClient" id="filterClient" onChange={this.handleChange}
+                  placeholder="Nome ou Email@" />
+                <InputGroupAddon addonType="append">
+                  <Button onClick={this.listAllReceiptsFilter} color="info">Buscar Recibo!</Button>
+                </InputGroupAddon>
+              </InputGroup>
+              <br />
+              <CardTitle><h5>Buscar recibos por dados do serviço:</h5></CardTitle>
+              <InputGroup>
+                <Input type="text" name="filterService" id="filterService" onChange={this.handleChange}
+                  placeholder="Nome do serviço ou valor" />
+                <InputGroupAddon addonType="append">
+                  <Button onClick={this.listAllReceiptsFilter} color="info">Buscar Recibo!</Button>
+                </InputGroupAddon>
+              </InputGroup>
             </Card>
 
           </Col>

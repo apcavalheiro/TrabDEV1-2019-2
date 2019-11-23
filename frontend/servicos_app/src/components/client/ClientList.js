@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
-import { Button, ButtonGroup, Container, Table, Spinner, Alert, Row,
-   Col, FormGroup, Input, Card, CardTitle } from 'reactstrap';
+import {
+  Button, ButtonGroup, Container, Table, Spinner, Alert, Row,
+  Col, InputGroup, InputGroupAddon, Input, Card, CardTitle
+} from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { listAllClients, removeClient } from '../../api/API'
+import { listAllClients, removeClient, findClientsForName } from '../../api/API'
 
 const initialState = {
   filterText: '',
@@ -20,6 +22,12 @@ export default class ClientList extends Component {
 
   listAllClients = async () => {
     const { data } = await listAllClients()
+    this.setState({ clients: data, isLoading: false })
+  }
+
+  findClientsForName = async () => {
+    const { filterText } = this.state
+    const { data } = await findClientsForName(filterText)
     this.setState({ clients: data, isLoading: false })
   }
 
@@ -49,9 +57,6 @@ export default class ClientList extends Component {
     const { isLoading, clients, errorMessage, filterText } = this.state;
 
     const list = clients
-      .filter(c => {
-        return c.nome.toLowerCase().indexOf(filterText.toLowerCase()) >= 0
-      })
       .map(c => (
         <tr key={c.id}>
           <td>{c.nome}</td>
@@ -98,11 +103,14 @@ export default class ClientList extends Component {
         <Row>
           <Col>
             <Card body>
-              <CardTitle><h5>Buscar clientes por Nome:</h5></CardTitle>
-              <FormGroup>
+              <CardTitle><h5>Buscar clientes:</h5></CardTitle>
+              <InputGroup>
                 <Input type="text" name="filterText" id="filterText" onChange={this.handleChange}
-                 placeholder="Nome..." />
-              </FormGroup>
+                  placeholder="Nome do cliente..." />
+                <InputGroupAddon addonType="append">
+                  <Button onClick={this.findClientsForName} color="info">Buscar Cliente!</Button>
+                </InputGroupAddon>
+              </InputGroup>
             </Card>
           </Col>
         </Row>
