@@ -5,10 +5,31 @@ const baseUrlReceipts = "/api/recibos/"
 const baseUrlServices = "/api/servicos/"
 const baseUrlUsers = "/api/usuarios/"
 
-//usuarios
+//login
 let config = { 'Authorization': getAuthToken() }
 const accessed = async (pass) => (
   await axios.post(`${baseUrlUsers}login/`, pass, { headers: config })
+)
+
+//usuarios
+const listAllUsers = async () => (
+  await axios.get(`${baseUrlUsers}`, { headers: config })
+)
+
+const listUser = async (id) => (
+  await axios.get(`${baseUrlUsers}` + id, { headers: config })
+)
+
+const updateUser = async (id, user) => (
+  await axios.put(baseUrlUsers + id, user, { headers: config })
+)
+
+const createUser = async (user) => (
+  await axios.post(baseUrlUsers, user, { headers: config })
+)
+
+const removeUser = async (id) => (
+  await axios.delete(baseUrlUsers + id, { headers: config })
 )
 
 //clientes
@@ -92,6 +113,11 @@ const updateService = async (id, service) => (
 
 export {
   accessed,
+  listAllUsers,
+  listUser,
+  updateUser,
+  createUser,
+  removeUser,
   findClientsForName,
   updateClient,
   listAllClients,

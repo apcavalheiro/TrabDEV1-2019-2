@@ -36,6 +36,7 @@ export default class LoginForm extends Component {
             await this.props.history.push("/home")
             await document.location.reload(true);
         } catch (error) {
+            console.log(error)
             let { message } = error.response.data
             this.setState({ errorMessage: message })
         }

@@ -1,16 +1,19 @@
 import React from 'react'
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
-import AppNavbar from '../components/templates/AppNavbar'
-import Home from '../components/home/Home'
-import ServiceForm from '../components/servico/ServiceForm'
-import ServiceList from '../components/servico/ServiceList'
+import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom'
 import ClientForm from '../components/client/ClientForm'
 import ClientList from '../components/client/ClientList'
-import ReceiptList from '../components/recibo/ReceiptList'
-import ReceiptForm from '../components/recibo/ReceiptForm'
-import ReceiptShow from '../components/recibo/ReceiptShow'
-import LoginForm from '../components/login/LoginForm'
+import Home from '../components/home/Home'
 import { isLoggedIn } from '../components/login/AuthStorage'
+import LoginForm from '../components/login/LoginForm'
+import ReceiptForm from '../components/recibo/ReceiptForm'
+import ReceiptList from '../components/recibo/ReceiptList'
+import ReceiptShow from '../components/recibo/ReceiptShow'
+import ServiceForm from '../components/servico/ServiceForm'
+import ServiceList from '../components/servico/ServiceList'
+import AppNavbar from '../components/templates/AppNavbar'
+import UserForm from '../components/user/UserForm'
+import UserList from '../components/user/UserList'
+
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
     <Route
@@ -35,6 +38,9 @@ const Routes = () => (
             <PrivateRoute path='/receipts/new' component={ReceiptForm} />
             <PrivateRoute path='/receipts/show/:idReceipt' component={ReceiptShow} />
             <PrivateRoute path='/receipts/:idReceipt' component={ReceiptForm} />
+            <Route path='/users/new' component={UserForm} />
+            <Route path='/users/:id' component={UserForm} />
+            <Route path='/users' exact={true} component={UserList} />
             <Route path="*" component={() => <h1>Page not found!</h1>} />
         </Switch>
     </Router>
