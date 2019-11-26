@@ -21,7 +21,7 @@ export default class AppNavbar extends Component {
   }
 
   render() {
-    return (<Navbar style={{ background: 'black' }} dark expand="md">
+    return (<Navbar style={{ background: 'black', fontSize: "18px" }} dark expand="md">
       <NavbarBrand tag={Link} to="/home">DEV1 2019/2</NavbarBrand>
       <NavbarToggler onClick={this.toggle} />
       <Collapse isOpen={this.state.isOpen} navbar>

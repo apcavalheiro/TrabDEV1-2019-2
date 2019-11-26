@@ -1,5 +1,6 @@
 package br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.services;
 
+import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.auth.AuthUser;
 import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.entities.Recibo;
 import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.repositorys.ReciboRepository;
 import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.repositorys.ServicoRepository;
@@ -73,11 +74,12 @@ public class ReciboService {
         this.reciboRepository.delete(recibo);
     }
 
-    public Recibo cadastrarRecibo(Recibo recibo) {
+    public Recibo cadastrarRecibo(Recibo recibo, AuthUser authUser) {
         Recibo reciboSalvo = null;
         try {
             isRecibo(recibo);
             this.calcularValorRecibo(recibo);
+            recibo.setUsuario(authUser.getUsuario());
             reciboSalvo = this.reciboRepository.save(recibo);
         } catch (NullPointerException e) {
             throw new InvalidRequest("Não é permitido cadastro nulo!");
@@ -85,10 +87,11 @@ public class ReciboService {
         return reciboSalvo;
     }
 
-    public void atualizarRecibo(Recibo recibo, Integer id) {
+    public void atualizarRecibo(Recibo recibo, Integer id, AuthUser authUser) {
         try {
             this.isRecibo(recibo);
             recibo.setId(id);
+            recibo.setUsuario(authUser.getUsuario());
             this.calcularValorRecibo(recibo);
             this.reciboRepository.save(recibo);
         } catch (NullPointerException e) {

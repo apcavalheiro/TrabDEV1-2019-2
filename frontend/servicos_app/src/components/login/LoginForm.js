@@ -21,7 +21,7 @@ export default class LoginForm extends Component {
 
     handleSubmit = async () => {
         const { login, senha } = this.state
-        if(!login || !senha){
+        if (!login || !senha) {
             this.setState({ errorMessage: "Os campos precisam ser preenchidos!" })
             return
         }
@@ -54,6 +54,11 @@ export default class LoginForm extends Component {
                         <div style={{ margin: "50px" }}>
                             {errorMessage && <span><Alert color="danger" isOpen={this.state.visible} toggle={this.onDismiss}>{errorMessage}</Alert></span>}
                         </div>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <h1>Sistema para cadastro de serviços</h1>
                     </Col>
                 </Row>
                 <Card body style={{ borderColor: '#333', width: '400px', height: '250px' }} >

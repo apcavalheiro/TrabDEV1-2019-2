@@ -1,5 +1,6 @@
 package br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.controllers;
 
+import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.auth.AuthUser;
 import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.entities.Recibo;
 import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.repositorys.ReciboRepository;
 import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.services.ReciboService;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -32,9 +34,10 @@ public class ReciboController {
     }
 
     @PostMapping
-    public ResponseEntity<Recibo> cadastrarRecibo(@RequestBody Recibo recibo) {
+    public ResponseEntity<Recibo> cadastrarRecibo(@AuthenticationPrincipal AuthUser authUser,
+                                                  @RequestBody Recibo recibo) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(this.reciboService.cadastrarRecibo(recibo));
+                .body(this.reciboService.cadastrarRecibo(recibo, authUser));
     }
 
     @DeleteMapping("/{id}")
@@ -45,8 +48,9 @@ public class ReciboController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> atualizarRecibo(@RequestBody Recibo recibo, @PathVariable Integer id) {
-        this.reciboService.atualizarRecibo(recibo, id);
+    public ResponseEntity<Void> atualizarRecibo(@AuthenticationPrincipal AuthUser authUser,
+                                                @RequestBody Recibo recibo, @PathVariable Integer id) {
+        this.reciboService.atualizarRecibo(recibo, id, authUser);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .build();
     }
@@ -54,7 +58,7 @@ public class ReciboController {
     //filtros
     @GetMapping("/clientes")
     public ResponseEntity<Iterable<Recibo>> buscarRecibo(@RequestParam(required = false) String email,
-                                                     @RequestParam(required = false) String nome) {
+                                                         @RequestParam(required = false) String nome) {
         if (nome == null) {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(this.reciboService.buscarRecibosPorEmailCliente(email));
@@ -65,7 +69,7 @@ public class ReciboController {
 
     @GetMapping("/servicos")
     public ResponseEntity<Iterable<Recibo>> buscarRecibo(@RequestParam(required = false) String nome,
-                                                     @RequestParam(required = false) Double valor) {
+                                                         @RequestParam(required = false) Double valor) {
         if (nome == null) {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(this.reciboService.buscarRecibosPorValorServico(valor));
