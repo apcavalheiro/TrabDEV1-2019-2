@@ -23,7 +23,7 @@ export default class ClientForm extends Component {
     if (!email || !nome || !endereco) return
     if (!email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) return
     try {
-      if (id !== '') {
+      if (id != '') {
         await updateClient(id, client)
       } else {
         await createClient(client)
@@ -36,13 +36,17 @@ export default class ClientForm extends Component {
   }
 
   async componentDidMount() {
-    const { id } = this.props.match.params
-    if (id) {
-      const response = await findClient(id)
-      let { nome, email, endereco } = response.data
-      this.setState({
-        id, nome, email, endereco
-      })
+    try {
+      const { id } = this.props.match.params
+      if (id) {
+        const response = await findClient(id)
+        let { nome, email, endereco } = response.data
+        this.setState({
+          id, nome, email, endereco
+        })
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
 

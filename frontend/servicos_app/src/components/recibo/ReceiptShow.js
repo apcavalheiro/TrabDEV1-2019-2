@@ -20,13 +20,17 @@ export default class ReceiptShow extends Component {
   }
 
   async componentDidMount() {
-    const { idReceipt } = this.props.match.params
-    if (idReceipt) {
-      const response = await findReceipt(idReceipt)
-      this.setState({
-        receipt: response.data
+    try {
+      const { idReceipt } = this.props.match.params
+      if (idReceipt) {
+        const response = await findReceipt(idReceipt)
+        this.setState({
+          receipt: response.data
 
-      })
+        })
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
 

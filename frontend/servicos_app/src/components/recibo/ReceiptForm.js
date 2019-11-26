@@ -24,7 +24,7 @@ export default class ReceiptForm extends Component {
     super(props)
     this.state = { ...intialState }
   }
-  ""
+
   handleSubmit = async () => {
     const { idService, services, data, valor, idClient, idReceipt, clients } = this.state
     if (!data || !idClient || !idService || !valor || valor <= 0) return
@@ -37,15 +37,13 @@ export default class ReceiptForm extends Component {
       cliente
     }
     try {
-      if (idReceipt !== '') {
+      if (idReceipt != '') {
         console.log("update" + idReceipt)
         await updateReceipt(idReceipt, recibo)
       } else {
-        console.log("create veio no post" + recibo)
-
         await createReceipt(recibo)
       }
-      await this.props.history.push('/receipts')
+      this.props.history.push('/receipts')
     } catch (error) {
       let { message } = error.response.data
       this.setState({ errorMessage: message })
@@ -53,25 +51,29 @@ export default class ReceiptForm extends Component {
   }
 
   async componentDidMount() {
-    const responseClient = await listAllClients()
-    this.setState({
-      clients: responseClient.data
-    })
-
-    const responseService = await listAllServices()
-    this.setState({
-      services: responseService.data
-    })
-
-    const { idReceipt } = this.props.match.params
-    if (idReceipt) {
-      const response = await findReceipt(idReceipt)
-      const { data, valor, servico, cliente } = response.data
-      const idService = servico.id
-      const idClient = cliente.id
+    try {
+      const responseClient = await listAllClients()
       this.setState({
-        data, valor, idService, idReceipt, idClient
+        clients: responseClient.data
       })
+
+      const responseService = await listAllServices()
+      this.setState({
+        services: responseService.data
+      })
+
+      const { idReceipt } = this.props.match.params
+      if (idReceipt) {
+        const response = await findReceipt(idReceipt)
+        const { data, valor, servico, cliente } = response.data
+        const idService = servico.id
+        const idClient = cliente.id
+        this.setState({
+          data, valor, idService, idReceipt, idClient
+        })
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
 

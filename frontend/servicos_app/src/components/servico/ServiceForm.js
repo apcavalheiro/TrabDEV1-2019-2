@@ -21,7 +21,7 @@ export default class ServiceForm extends Component {
   handleSubmit = async () => {
     const { descricaoValor, descricaoServico, nome, id, valorBase } = this.state
     if (!descricaoValor || !descricaoServico || !nome || !valorBase) return
-    if(valorBase < 0) return
+    if (valorBase < 0) return
     const service = { descricaoValor, descricaoServico, nome, valorBase }
 
     try {
@@ -38,13 +38,18 @@ export default class ServiceForm extends Component {
   }
 
   async componentDidMount() {
-    const { id } = this.props.match.params
-    if (id) {
-      const response = await findService(id)
-      let { descricaoServico, descricaoValor, nome, valorBase } = response.data
-      this.setState({
-        id, descricaoServico, descricaoValor, nome, valorBase
-      })
+    try {
+      const { id } = this.props.match.params
+      console.log("ID"+ this.props.match.params)
+      if (id) {
+        const response = await findService(id)
+        let { descricaoServico, descricaoValor, nome, valorBase } = response.data
+        this.setState({
+          id, descricaoServico, descricaoValor, nome, valorBase
+        })
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -90,7 +95,7 @@ export default class ServiceForm extends Component {
             value={descricaoValor || ''} onChange={this.handleChange} validate={{
               required: { value: true, errorMessage: 'Campo obrigatório!' }
             }} style={{ resize: "none" }} />
-          <AvField name="valorBase" label="Valor Base" type="number" value={valorBase || ''}
+          <AvField name="valorBase" label="Valor Mínimo" type="number" value={valorBase || ''}
             onChange={this.handleChange} validate={{
               required: { value: true, errorMessage: 'Campo obrigatório!' }
             }} />

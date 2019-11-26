@@ -16,6 +16,7 @@ public class Recibo implements Serializable {
     private Double valor;
     private Cliente cliente;
     private Servico servico;
+    private Usuario usuario;
 
     public Recibo() {
     }
@@ -64,6 +65,15 @@ public class Recibo implements Serializable {
 
     public void setServico(Servico servico) {
         this.servico = servico;
+    }
+
+    @ManyToOne
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     @Override

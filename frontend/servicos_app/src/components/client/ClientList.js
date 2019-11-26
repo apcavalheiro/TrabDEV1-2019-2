@@ -17,7 +17,11 @@ export default class ClientList extends Component {
   state = { ...initialState }
 
   async componentDidMount() {
-    await this.listAllClients()
+    try {
+      await this.listAllClients()
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   listAllClients = async () => {
@@ -54,7 +58,7 @@ export default class ClientList extends Component {
   }
 
   render() {
-    const { isLoading, clients, errorMessage, filterText } = this.state;
+    const { isLoading, clients, errorMessage } = this.state;
 
     const list = clients
       .map(c => (

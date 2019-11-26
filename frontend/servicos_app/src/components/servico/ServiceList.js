@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {
   Button, ButtonGroup, Container, Table, Spinner, Alert, Row,
-  Col, Input, Card, CardTitle, InputGroupAddon,InputGroup
+  Col, Input, Card, CardTitle, InputGroupAddon, InputGroup
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { listAllServices, removeService, findServicesForName } from '../../api/API'
@@ -17,7 +17,11 @@ export default class ServiceList extends Component {
   state = { ...initialState }
 
   async componentDidMount() {
-    await this.listAllServices()
+    try {
+      await this.listAllServices()
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   listAllServices = async () => {

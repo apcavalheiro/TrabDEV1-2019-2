@@ -21,7 +21,11 @@ export default class ClientList extends Component {
   state = { ...initialState }
 
   async componentDidMount() {
-    await this.listAllreceipts()
+    try {
+      await this.listAllreceipts()
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   listAllReceiptsFilter = async () => {
@@ -74,7 +78,7 @@ export default class ClientList extends Component {
   }
 
   render() {
-    const { isLoading, receipts, errorMessage, filterData, filterNome } = this.state;
+    const { isLoading, receipts, errorMessage } = this.state;
 
     const list = receipts
       .map(r => (
