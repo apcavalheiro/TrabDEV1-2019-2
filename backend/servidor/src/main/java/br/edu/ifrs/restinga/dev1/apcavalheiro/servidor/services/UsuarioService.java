@@ -24,12 +24,18 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public Usuario buscarUsuario(Integer id) {
+    public Usuario buscarUsuario(AuthUser authUser, Integer id) {
+        if (!authUser.getUsuario().getPermissoes().contains("administrador")) {
+            throw new Forbidden("Não tem permissão para acessar esse recurso!");
+        }
         Optional<Usuario> usuario = this.usuarioRepository.findById(id);
         return usuario.orElseThrow(() -> new ObjectNotFound("Usuário com id: " + id + " não encontrado!"));
     }
 
-    public Iterable<Usuario> buscarUsuarios() {
+    public Iterable<Usuario> buscarUsuarios(AuthUser authUser) {
+        if (!authUser.getUsuario().getPermissoes().contains("administrador")) {
+            throw new Forbidden("Não tem permissão para acessar esse recurso!");
+        }
         List<Usuario> usuarios = this.usuarioRepository.findAll();
         if (usuarios.isEmpty()) {
             throw new ObjectNotFound("Nenhum usuário cadastrado!");
@@ -37,8 +43,11 @@ public class UsuarioService {
         return usuarios;
     }
 
-    public void excluirUsuario(Integer id) {
-        Usuario usuario = this.buscarUsuario(id);
+    public void excluirUsuario(AuthUser authUser, Integer id) {
+        if (!authUser.getUsuario().getPermissoes().contains("administrador")) {
+            throw new Forbidden("Não tem permissão para acessar esse recurso!");
+        }
+        Usuario usuario = this.buscarUsuario(authUser, id);
         try {
             this.usuarioRepository.delete(usuario);
         } catch (DataIntegrityViolationException e) {
@@ -49,10 +58,10 @@ public class UsuarioService {
     public String gerarToken(Usuario usuario) throws UnsupportedEncodingException {
         Algorithm algorithm = Algorithm.HMAC256(ConfiguracaoSeguranca.SEGREDO);
         Calendar agora = Calendar.getInstance();
-        agora.add(Calendar.HOUR, 24*7);
+        agora.add(Calendar.HOUR, 24 * 7);
         Date expira = agora.getTime();
         String token = "Bearer ";
-               token += JWT.create()
+        token += JWT.create()
                 .withClaim("id", usuario.getId()).
                         withExpiresAt(expira).
                         sign(algorithm);
@@ -75,6 +84,7 @@ public class UsuarioService {
         if (!authUser.getUsuario().getPermissoes().contains("administrador")) {
             throw new Forbidden("Não tem permissão para acessar esse recurso!");
         }
+
         usuario.setId(0);
         this.isUsuario(usuario);
         usuario.setSenha(ConfiguracaoSeguranca.PASSWORD_ENCODER.encode(usuario.getPass()));
@@ -85,19 +95,12 @@ public class UsuarioService {
         }
         return this.usuarioRepository.save(usuario);
     }
-    /*
-     if (usuarioAut == null || !usuarioAut.getUsuario().getPermissoes().contains("administrador")) {
-            ArrayList<String> permissao = new ArrayList<String>();
-            permissao.add("usuario");
-            entidade.setPermissoes(permissao);
-        }
-     */
 
     public Usuario atualizarUsuario(AuthUser authUser, Usuario usuario, Integer id) {
         if (!authUser.getUsuario().getPermissoes().contains("administrador")) {
             throw new Forbidden("Não tem permissão para acessar esse recurso!");
         }
-        Usuario usuarioDb = this.buscarUsuario(id);
+        Usuario usuarioDb = this.buscarUsuario(authUser, id);
         try {
             this.isUsuario(usuario);
             if (usuarioDb.getId() == id) {

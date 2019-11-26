@@ -22,16 +22,17 @@ public class UsuarioController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('administrador')")
-    public ResponseEntity<Usuario> buscarUsuario(@PathVariable Integer id) {
+    public ResponseEntity<Usuario> buscarUsuario(@AuthenticationPrincipal AuthUser authUser,
+                                                 @PathVariable Integer id) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(this.usuarioService.buscarUsuario(id));
+                .body(this.usuarioService.buscarUsuario(authUser, id));
     }
 
     @GetMapping
     @PreAuthorize("hasAuthority('administrador')")
-    public ResponseEntity<Iterable<Usuario>> buscarUsuarios() {
+    public ResponseEntity<Iterable<Usuario>> buscarUsuarios(@AuthenticationPrincipal AuthUser authUser) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(this.usuarioService.buscarUsuarios());
+                .body(this.usuarioService.buscarUsuarios(authUser));
     }
 
     @PostMapping
@@ -51,11 +52,20 @@ public class UsuarioController {
                 .body(this.usuarioService.atualizarUsuario(authUser, usuario, id));
     }
 
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('administrador')")
+    public ResponseEntity<Void> atualizarUsuario(@AuthenticationPrincipal AuthUser authUser,
+                                                 @PathVariable Integer id) {
+        this.usuarioService.excluirUsuario(authUser, id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .build();
+    }
+
     @PostMapping("login/")
     public ResponseEntity<Usuario> loginToken(@RequestBody Pass pass) throws UnsupportedEncodingException {
         String token = null;
-            Usuario usuario = this.usuarioService.login(pass);
-            token = this.usuarioService.gerarToken(usuario);
+        Usuario usuario = this.usuarioService.login(pass);
+        token = this.usuarioService.gerarToken(usuario);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .header("token", token).body(usuario);
