@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Collapse, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink, Button } from 'reactstrap'
 import { Link } from 'react-router-dom'
-import { clearAuthToken, isLoggedIn } from '../login/AuthStorage'
+import { logout, isLoggedIn } from '../login/AuthStorage'
 
 export default class AppNavbar extends Component {
   constructor(props) {
@@ -16,7 +16,7 @@ export default class AppNavbar extends Component {
   }
 
   logout = async () => {
-    await clearAuthToken()
+    await logout()
     await document.location.reload(true);
   }
 

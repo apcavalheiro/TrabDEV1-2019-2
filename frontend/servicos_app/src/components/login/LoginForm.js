@@ -32,9 +32,12 @@ export default class LoginForm extends Component {
         }
         try {
             const retorno = await accessed(pass)
-            setAuthToken(retorno.headers.token)
+            await setAuthToken(retorno.headers.token)
+            await localStorage.setItem('@nomeUsuario', retorno.data.nome)
+            await localStorage.setItem('@permissaoUsuario', retorno.data.permissoes)
             await this.props.history.push("/home")
-            await document.location.reload(true);
+            await document.location.reload(true)
+
         } catch (error) {
             console.log(error)
             let { message } = error.response.data

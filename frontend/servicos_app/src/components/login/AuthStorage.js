@@ -12,13 +12,15 @@ const isLoggedIn = () => {
 	return !!localStorage.getItem(TOKEN)
 }
 
-const clearAuthToken = () => {
-	return localStorage.removeItem(TOKEN)
+const logout = async () => {
+	await localStorage.removeItem(TOKEN)
+	await localStorage.removeItem('@permissaoUsuario')
+	await localStorage.removeItem('@nomeUsuario')
 }
 
 export {
+	logout,
 	setAuthToken,
 	getAuthToken,
 	isLoggedIn,
-	clearAuthToken
 }
