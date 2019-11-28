@@ -4,7 +4,7 @@ import { accessed } from '../../api/API'
 import { setAuthToken } from './AuthStorage'
 
 const intialState = {
-    login: '', senha: '', errorMessage: '', logado: false
+    login: '', senha: '', errorMessage: ''
 }
 
 export default class LoginForm extends Component {
@@ -34,12 +34,11 @@ export default class LoginForm extends Component {
             const retorno = await accessed(pass)
             await setAuthToken(retorno.headers.token)
             await localStorage.setItem('@nomeUsuario', retorno.data.nome)
-            await localStorage.setItem('@permissaoUsuario', retorno.data.permissoes)
+            await localStorage.setItem('@perfilUsuario', retorno.data.permissoes)
             await this.props.history.push("/home")
             await document.location.reload(true)
 
         } catch (error) {
-            console.log(error)
             let { message } = error.response.data
             this.setState({ errorMessage: message })
         }

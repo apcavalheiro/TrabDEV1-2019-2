@@ -84,15 +84,9 @@ public class UsuarioService {
         if (!authUser.getUsuario().getPermissoes().contains("administrador")) {
             throw new Forbidden("Não tem permissão para acessar esse recurso!");
         }
-
         usuario.setId(0);
         this.isUsuario(usuario);
         usuario.setSenha(ConfiguracaoSeguranca.PASSWORD_ENCODER.encode(usuario.getPass()));
-        if (authUser == null || !authUser.getUsuario().getPermissoes().contains("administrador")) {
-            ArrayList<String> permissao = new ArrayList<String>();
-            permissao.add("usuario");
-            usuario.setPermissoes(permissao);
-        }
         return this.usuarioRepository.save(usuario);
     }
 
@@ -103,7 +97,7 @@ public class UsuarioService {
         Usuario usuarioDb = this.buscarUsuario(authUser, id);
         try {
             this.isUsuario(usuario);
-            if (usuarioDb.getId() == id) {
+            if (id == usuarioDb.getId()) {
                 usuario.setId(id);
                 this.usuarioRepository.save(usuario);
             }
@@ -121,8 +115,10 @@ public class UsuarioService {
         if (usuario.getLogin() == null || usuario.getLogin().equals("")) {
             throw new InvalidRequest("O Campo Login é obrigatório");
         }
-        if (usuario.getPass() == null || usuario.getPass().equals("")) {
-            throw new InvalidRequest("O Campo Senha é obrigatório");
+        if (usuario.getId() != null) {
+            if (usuario.getPass() == null || usuario.getPass().equals("")) {
+                throw new InvalidRequest("O Campo Senha é obrigatório");
+            }
         }
         return true;
     }

@@ -29,7 +29,6 @@ export default class ReceiptShow extends Component {
         const response = await findReceipt(idReceipt)
         this.setState({
           receipt: response.data
-
         })
       }
     } catch (error) {
@@ -54,7 +53,7 @@ export default class ReceiptShow extends Component {
         <ListGroupItem>
           <ListGroupItemHeading>Dados do Serviço:</ListGroupItemHeading>
           <ListGroupItemText>
-            <strong>Data do serviço:</strong> {servico.data || ''}<br />
+            <strong>Data do serviço:</strong> {receipt.data || ''}<br />
             <strong>Descrição do serviço:</strong> {servico.descricaoServico || ''}<br />
             <strong>Descrição do valor:</strong> {servico.descricaoValor || ''}<br />
           </ListGroupItemText>

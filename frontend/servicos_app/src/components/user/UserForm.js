@@ -4,12 +4,13 @@ import { AvForm, AvField } from 'availity-reactstrap-validation';
 import { Button, Container, Row, Col, Alert } from 'reactstrap';
 
 const intialState = {
-  id: '',
+  idUser: '',
   errorMessage: '',
   nome: '',
   login: '',
   pass: '',
-  permissao: ''
+  permissao: '',
+  passProps: ''
 }
 
 export default class ClientForm extends Component {
@@ -18,14 +19,29 @@ export default class ClientForm extends Component {
     this.state = { ...intialState }
   }
 
+  async componentDidMount() {
+    try {
+      const { idUser } = this.props.match.params
+      if (idUser) {
+        const response = await listUser(idUser)
+        let { nome, login, permissao } = response.data
+        this.setState({
+          idUser, nome, login, permissao
+        })
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   handleSubmit = async () => {
-    const { login, nome, permissao, id, pass } = this.state
+    const { login, nome, permissao, idUser, pass } = this.state
     const permissoes = [permissao]
     const usuario = { login, nome, permissoes, pass }
-    if (!login || !nome || !permissoes || !pass) return
+    if (!login || !nome || !permissoes) return
     try {
-      if (id != '') {
-        await updateUser(id, usuario)
+      if (idUser != '') {
+        await updateUser(idUser, usuario)
       } else {
         await createUser(usuario)
       }
@@ -33,21 +49,6 @@ export default class ClientForm extends Component {
     } catch (error) {
       let { message } = error.response.data
       this.setState({ errorMessage: message })
-    }
-  }
-
-  async componentDidMount() {
-    try {
-      const { id } = this.props.match.params
-      if (id) {
-        const response = await listUser(id)
-        let { nome, login, permissao } = response.data
-        this.setState({
-          id, nome, login, permissao
-        })
-      }
-    } catch (error) {
-      console.log(error)
     }
   }
 
@@ -69,7 +70,16 @@ export default class ClientForm extends Component {
   }
 
   render() {
-    let { nome, login, permissao, errorMessage, pass, id } = this.state
+    let { nome, login, permissao, errorMessage, idUser } = this.state
+    const senha = <div>
+      <AvField name="pass" label="Digite a senha" type="password" value="" onChange={this.handleChange} validate={{
+        required: { value: true, errorMessage: 'Campo obrigatório!' }
+      }} />
+      <AvField name="passProps" onChange={this.handleChange} label="Confirme a senha" type="password" validate={{
+        match: { value: 'pass', errorMessage: 'Não conferem' }, required: { value: true, errorMessage: 'Campo obrigatório!' }
+      }} />
+    </div>
+
     return (
       <Container>
         <Row>
@@ -86,10 +96,6 @@ export default class ClientForm extends Component {
           <AvField name="login" label="Login" type="text" value={login || ''} onChange={this.handleChange} errorMessage="Entre com um login válido" validate={{
             required: { value: true, errorMessage: 'Campo obrigatório!' }
           }} />
-          <AvField name="pass" label={id ? <span style={{ color: "red" }}>Digite uma nova senha
-          se desejar alterar</span> : "Senha"} type="password" value="" onChange={this.handleChange} validate={{
-              required: { value: true, errorMessage: 'Campo obrigatório!' }
-            }} />
           <AvField type="select" name="permissao" label="Selecione a permissão:"
             errorMessage="Campo Obrigátorio!"
             value={permissao || ''} onChange={this.handleChange} required>
@@ -98,6 +104,7 @@ export default class ClientForm extends Component {
             <option value="administrador">Administrador do Sistema</option>
             ))}
           </AvField>
+          {idUser ? "" : senha}
           <div className="float-right">
             <Button type="button" onClick={this.handleClear} color="info" >Cancelar</Button>
             {' '}

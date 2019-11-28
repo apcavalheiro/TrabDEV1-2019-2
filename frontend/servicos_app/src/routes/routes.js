@@ -39,7 +39,7 @@ const Routes = () => (
             <PrivateRoute path='/receipts/show/:idReceipt' component={ReceiptShow} />
             <PrivateRoute path='/receipts/:idReceipt' component={ReceiptForm} />
             <Route path='/users/new' component={UserForm} />
-            <Route path='/users/:id' component={UserForm} />
+            <Route path='/users/:idUser' component={UserForm} />
             <Route path='/users' exact={true} component={UserList} />
             <Route path="*" component={() => <h1>Page not found!</h1>} />
         </Switch>

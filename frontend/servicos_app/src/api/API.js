@@ -21,7 +21,7 @@ const listUser = async (id) => (
 )
 
 const updateUser = async (id, user) => (
-  await axios.put(baseUrlUsers + id, user, { headers: config })
+  await axios.patch(`${baseUrlUsers}` + id, user, { headers: config })
 )
 
 const createUser = async (user) => (

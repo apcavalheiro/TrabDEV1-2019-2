@@ -14,7 +14,7 @@ const isLoggedIn = () => {
 
 const logout = async () => {
 	await localStorage.removeItem(TOKEN)
-	await localStorage.removeItem('@permissaoUsuario')
+	await localStorage.removeItem('@perfilUsuario')
 	await localStorage.removeItem('@nomeUsuario')
 }
 

@@ -1,38 +1,32 @@
 import React, { Component } from 'react'
-import { IoIosContact } from "react-icons/io";
-
-import { Collapse, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink, Button } from 'reactstrap'
+import {
+  Collapse, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem,
+  NavLink,
+} from 'reactstrap'
 import { Link } from 'react-router-dom'
-import { logout, isLoggedIn } from '../login/AuthStorage'
+import { isLoggedIn } from '../login/AuthStorage'
+import UserComponent from '../user/UserComponent';
+
 
 export default class AppNavbar extends Component {
   constructor(props) {
     super(props);
-    this.state = { isOpen: false, log: true };
+    this.state = { isOpenNav: false };
   }
 
-  toggle = () => {
+  toggleNav = () => {
     this.setState({
-      isOpen: !this.state.isOpen
+      Nav: !this.state.Nav
     });
   }
 
-  logout = async () => {
-    await logout()
-    await document.location.reload(true);
-  }
-
   render() {
-    const nome = localStorage.getItem('@nomeUsuario')
+
     return (<Navbar style={{ background: 'black', fontSize: "18px" }} dark expand="md">
       <NavbarBrand tag={Link} to="/home">DEV1 2019/2</NavbarBrand>
-      <NavbarToggler onClick={this.toggle} />
-      <Collapse isOpen={this.state.isOpen} navbar>
-        {isLoggedIn() && <Nav className="ml-auto" navbar>
-          <NavbarBrand className="float-left" style={{ color: "#ffff00",padding:"6px" }}>
-            <IoIosContact />&nbsp;
-            {nome || ""}
-          </NavbarBrand>
+      <NavbarToggler onClick={this.Nav} />
+      {isLoggedIn() && <Collapse Nav={this.state.Nav} navbar>
+        <Nav className="ml-auto" navbar>
           <NavItem>
             <NavLink tag={Link} to="/home">Início</NavLink>
           </NavItem>
@@ -45,13 +39,11 @@ export default class AppNavbar extends Component {
           <NavItem>
             <NavLink tag={Link} to="/receipts">Recibos</NavLink>
           </NavItem>
-
           <NavItem>
-            {<NavLink style={{ color: "#ffff00" }} tag={Link} to="/" onClick={this.logout}><Button outline color="warning">Sair</Button></NavLink>}
+            <UserComponent />
           </NavItem>
-        </Nav>}
-
-      </Collapse>
+        </Nav>
+      </Collapse>}
     </Navbar >)
   }
 }
