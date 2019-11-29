@@ -20,10 +20,10 @@ public class Inicializador {
             usuarioRoot = new Usuario();
             usuarioRoot.setNome("admin");
             usuarioRoot.setLogin("admin");
-            usuarioRoot.setSenha(ConfiguracaoSeguranca.PASSWORD_ENCODER.encode("123"));
-            usuarioRoot.setPermissoes(Arrays.asList("administrador" ));
+            usuarioRoot.setSenha(ConfiguracaoSeguranca.PASSWORD_ENCODER
+                    .encode("123456"));
+            usuarioRoot.setPermissoes(Arrays.asList("administrador"));
             usuarioRepository.save(usuarioRoot);
         }
     }
 }
-//TODO preciso fazer a ligação do usuario ao recibo

@@ -21,7 +21,6 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('administrador')")
     public ResponseEntity<Usuario> buscarUsuario(@AuthenticationPrincipal AuthUser authUser,
                                                  @PathVariable Integer id) {
         return ResponseEntity.status(HttpStatus.OK)
@@ -43,7 +42,7 @@ public class UsuarioController {
                 .body(this.usuarioService.cadastrarUsuario(authUser, usuario));
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('administrador')")
     public ResponseEntity<Usuario> atualizarUsuario(@AuthenticationPrincipal AuthUser authUser,
                                                     @RequestBody Usuario usuario,

@@ -16,44 +16,16 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
-
-    public Usuario buscarUsuario(AuthUser authUser, Integer id) {
-        if (!authUser.getUsuario().getPermissoes().contains("administrador")) {
-            throw new Forbidden("Não tem permissão para acessar esse recurso!");
-        }
-        Optional<Usuario> usuario = this.usuarioRepository.findById(id);
-        return usuario.orElseThrow(() -> new ObjectNotFound("Usuário com id: " + id + " não encontrado!"));
-    }
-
-    public Iterable<Usuario> buscarUsuarios(AuthUser authUser) {
-        if (!authUser.getUsuario().getPermissoes().contains("administrador")) {
-            throw new Forbidden("Não tem permissão para acessar esse recurso!");
-        }
-        List<Usuario> usuarios = this.usuarioRepository.findAll();
-        if (usuarios.isEmpty()) {
-            throw new ObjectNotFound("Nenhum usuário cadastrado!");
-        }
-        return usuarios;
-    }
-
-    public void excluirUsuario(AuthUser authUser, Integer id) {
-        if (!authUser.getUsuario().getPermissoes().contains("administrador")) {
-            throw new Forbidden("Não tem permissão para acessar esse recurso!");
-        }
-        Usuario usuario = this.buscarUsuario(authUser, id);
-        try {
-            this.usuarioRepository.delete(usuario);
-        } catch (DataIntegrityViolationException e) {
-            throw new DataIntegrityException("Não é possível excluir porque há recibo relacionado");
-        }
-    }
 
     public String gerarToken(Usuario usuario) throws UnsupportedEncodingException {
         Algorithm algorithm = Algorithm.HMAC256(ConfiguracaoSeguranca.SEGREDO);
@@ -80,46 +52,103 @@ public class UsuarioService {
         throw new ObjectNotFound("Usuário e/ou senha incorreto(s)");
     }
 
+    public Usuario buscarUsuario(AuthUser authUser, Integer id) {
+
+        Optional<Usuario> usuario = this.usuarioRepository.findById(id);
+        //isAllowed(authUser, usuario.get());
+        return usuario.orElseThrow(() -> new ObjectNotFound("Usuário com id: " + id + " não encontrado!"));
+    }
+
+    public Iterable<Usuario> buscarUsuarios(AuthUser authUser) {
+        if (!authUser.getUsuario().getPermissoes().contains("administrador")) {
+            throw new Forbidden("Não tem permissão para acessar esse recurso!");
+        }
+        List<Usuario> usuarios = this.usuarioRepository.findAll();
+        if (usuarios.isEmpty()) {
+            throw new ObjectNotFound("Nenhum usuário cadastrado!");
+        }
+        return usuarios;
+    }
+
     public Usuario cadastrarUsuario(AuthUser authUser, Usuario usuario) {
         if (!authUser.getUsuario().getPermissoes().contains("administrador")) {
             throw new Forbidden("Não tem permissão para acessar esse recurso!");
         }
         usuario.setId(0);
         this.isUsuario(usuario);
+        this.isLogin(usuario);
+        if (!usuario.getPermissoes().contains("administrador")) {
+            usuario.getPermissoes().add("usuario");
+        }
         usuario.setSenha(ConfiguracaoSeguranca.PASSWORD_ENCODER.encode(usuario.getPass()));
         return this.usuarioRepository.save(usuario);
     }
 
     public Usuario atualizarUsuario(AuthUser authUser, Usuario usuario, Integer id) {
-        if (!authUser.getUsuario().getPermissoes().contains("administrador")) {
-            throw new Forbidden("Não tem permissão para acessar esse recurso!");
-        }
         Usuario usuarioDb = this.buscarUsuario(authUser, id);
         try {
+            this.isAllowed(authUser, usuarioDb);
             this.isUsuario(usuario);
             if (id == usuarioDb.getId()) {
-                usuario.setId(id);
-                this.usuarioRepository.save(usuario);
+                usuarioDb.setSenha(ConfiguracaoSeguranca.PASSWORD_ENCODER.encode(usuario.getPass()));
+                usuarioDb.setNome(usuario.getNome());
+                usuarioDb.setLogin(usuario.getLogin());
+                if (usuario.getPermissoes() != null && usuario.getPermissoes().contains("administrador")) {
+                    usuarioDb.getPermissoes().add("administrador");
+                }
+                this.usuarioRepository.save(usuarioDb);
             }
         } catch (NullPointerException e) {
             throw new InvalidRequest("Não é permitido cadastro nulo!" + e);
         }
-        return usuario;
+        return usuarioDb;
+    }
+
+    public void excluirUsuario(AuthUser authUser, Integer id) {
+        if (!authUser.getUsuario().getPermissoes().contains("administrador")) {
+            throw new Forbidden("Não tem permissão para acessar esse recurso!");
+        }
+        Usuario usuario = this.buscarUsuario(authUser, id);
+        if (authUser.getUsername() == usuario.getLogin()) {
+            throw new InvalidRequest("Não é permitido excluir usuário logado!");
+        }
+        try {
+            this.usuarioRepository.delete(usuario);
+        } catch (DataIntegrityViolationException e) {
+            throw new DataIntegrityException("Não é possível excluir porque há recibo relacionado");
+        }
+    }
+
+    private boolean isAllowed(AuthUser authUser, Usuario usuarioDb) {
+        if (!authUser.getUsuario().getPermissoes().contains("administrador") ||
+                usuarioDb.getLogin() == authUser.getUsername()) {
+            throw new Forbidden("Não tem permissão para acessar esse recurso!");
+        }
+        return true;
+    }
+
+    private boolean isLogin(Usuario usuario) {
+        Usuario usuarioExiste = this.usuarioRepository.findByLogin(usuario.getLogin());
+        if (usuarioExiste != null) {
+            throw new InvalidRequest("Este login já está cadastrado em nosso sistema!");
+        }
+        return true;
     }
 
     private boolean isUsuario(Usuario usuario) {
-
         if (usuario.getNome() == null || usuario.getNome().equals("")) {
             throw new InvalidRequest("O Campo Nome é obrigatório");
         }
         if (usuario.getLogin() == null || usuario.getLogin().equals("")) {
             throw new InvalidRequest("O Campo Login é obrigatório");
         }
-        if (usuario.getId() != null) {
-            if (usuario.getPass() == null || usuario.getPass().equals("")) {
-                throw new InvalidRequest("O Campo Senha é obrigatório");
-            }
+        if (usuario.getPass() == null || usuario.getPass().equals("")) {
+            throw new InvalidRequest("O Campo Senha é obrigatório");
         }
+        if (usuario.getPass().length() < 6) {
+            throw new InvalidRequest("O Campo Senha deve conter no mínimo 6 caracteres!");
+        }
+
         return true;
     }
 }
