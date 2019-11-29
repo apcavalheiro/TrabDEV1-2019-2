@@ -40,7 +40,6 @@ export default class ServiceForm extends Component {
   async componentDidMount() {
     try {
       const { id } = this.props.match.params
-      console.log("ID"+ this.props.match.params)
       if (id) {
         const response = await findService(id)
         let { descricaoServico, descricaoValor, nome, valorBase } = response.data
@@ -83,7 +82,7 @@ export default class ServiceForm extends Component {
           </Col>
         </Row>
         <AvForm onSubmit={this.handleSubmit}>
-          <AvField name="nome" label="Nome" type="text" value={nome || ''}
+          <AvField name="nome" label="Serviço" type="text" value={nome || ''}
             onChange={this.handleChange} validate={{
               required: { value: true, errorMessage: 'Campo obrigatório!' }
             }} />

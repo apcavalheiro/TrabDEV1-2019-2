@@ -1,18 +1,10 @@
 import React from 'react';
-import { Toast, ToastBody, ToastHeader } from 'reactstrap';
 
 const Footer = () => {
   return (
-    <div className="p-3 bg-dark my-2 rounded">
-    <Toast>
-      <ToastHeader>
-        Trabalho DEV1
-      </ToastHeader>
-      <ToastBody>
-       &copy; 2019 Adriano Cavalheiro.
-      </ToastBody>
-    </Toast>
-  </div>
+    <div className="footer navbar-fixed-bottom" align="center" style={{marginTop:"10%", padding:"50px"}}>
+      <p style={{ color: "#333" }}>Trabalho DEV1 2019  &copy; Adriano Cavalheiro.</p>
+    </div>
   )
 }
 export default Footer

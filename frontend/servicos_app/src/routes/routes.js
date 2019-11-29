@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-d
 import ClientForm from '../components/client/ClientForm'
 import ClientList from '../components/client/ClientList'
 import Home from '../components/home/Home'
-import { isLoggedIn } from '../components/login/AuthStorage'
+import { isLoggedIn, isAdmin } from '../components/login/AuthStorage'
 import LoginForm from '../components/login/LoginForm'
 import ReceiptForm from '../components/recibo/ReceiptForm'
 import ReceiptList from '../components/recibo/ReceiptList'
@@ -22,6 +22,13 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
             isLoggedIn() ? (<Component {...props} />)
                 : (<Redirect to={{ pathname: "/", state: { from: props.location } }} />)} />)
 
+const PrivateRouteAdmin = ({ component: Component, ...rest }) => (
+    <Route
+        {...rest}
+        render={props =>
+            isLoggedIn() && isAdmin() ? (<Component {...props} />)
+                : (<Redirect to={{ pathname: "/forbidden", state: { from: props.location } }} />)} />)
+
 const Routes = () => (
     <Router>
         <AppNavbar />
@@ -38,9 +45,10 @@ const Routes = () => (
             <PrivateRoute path='/receipts/new' component={ReceiptForm} />
             <PrivateRoute path='/receipts/show/:idReceipt' component={ReceiptShow} />
             <PrivateRoute path='/receipts/:idReceipt' component={ReceiptForm} />
-            <Route path='/users/new' component={UserForm} />
-            <Route path='/users/:idUser' component={UserForm} />
-            <Route path='/users' exact={true} component={UserList} />
+            <PrivateRouteAdmin path='/users/new' component={UserForm} />
+            <PrivateRouteAdmin path='/users/:idUser' component={UserForm} />
+            <PrivateRouteAdmin path='/users' exact={true} component={UserList} />
+            <Route path="/forbidden" component={() => <h1>Forbidden!</h1>} />
             <Route path="*" component={() => <h1>Page not found!</h1>} />
         </Switch>
     </Router>

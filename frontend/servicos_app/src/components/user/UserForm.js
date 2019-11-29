@@ -35,10 +35,11 @@ export default class ClientForm extends Component {
   }
 
   handleSubmit = async () => {
-    const { login, nome, permissao, idUser, pass } = this.state
+    const { login, nome, permissao, idUser, pass, passProps } = this.state
     const permissoes = [permissao]
     const usuario = { login, nome, permissoes, pass }
     if (!login || !nome || !permissoes) return
+    if (pass != passProps) return
     try {
       if (idUser != '') {
         await updateUser(idUser, usuario)
@@ -70,15 +71,7 @@ export default class ClientForm extends Component {
   }
 
   render() {
-    let { nome, login, permissao, errorMessage, idUser } = this.state
-    const senha = <div>
-      <AvField name="pass" label="Digite a senha" type="password" value="" onChange={this.handleChange} validate={{
-        required: { value: true, errorMessage: 'Campo obrigatório!' }
-      }} />
-      <AvField name="passProps" onChange={this.handleChange} label="Confirme a senha" type="password" validate={{
-        match: { value: 'pass', errorMessage: 'Não conferem' }, required: { value: true, errorMessage: 'Campo obrigatório!' }
-      }} />
-    </div>
+    let { nome, login, permissao, errorMessage } = this.state
 
     return (
       <Container>
@@ -104,7 +97,12 @@ export default class ClientForm extends Component {
             <option value="administrador">Administrador do Sistema</option>
             ))}
           </AvField>
-          {idUser ? "" : senha}
+          <AvField name="pass" label="Digite a senha" placeholder="******" type="password" value="" onChange={this.handleChange} validate={{
+            required: { value: true, errorMessage: 'Campo obrigatório!' }
+          }} />
+          <AvField name="passProps" onChange={this.handleChange} label="Confirme a senha" placeholder="******" type="password" validate={{
+            match: { value: 'pass', errorMessage: 'Não conferem' }, required: { value: true, errorMessage: 'Campo obrigatório!' }
+          }} />
           <div className="float-right">
             <Button type="button" onClick={this.handleClear} color="info" >Cancelar</Button>
             {' '}

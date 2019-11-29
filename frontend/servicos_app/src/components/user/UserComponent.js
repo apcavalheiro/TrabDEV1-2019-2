@@ -13,7 +13,11 @@ export default class UserComponent extends Component {
 
     render() {
         const nome = localStorage.getItem('@nomeUsuario')
-        const perfil = localStorage.getItem('@permissaoUsuario')
+        const perfil = localStorage.getItem('@perfilUsuario')
+
+        const gerenciarUsuarios = <NavItem>
+            <NavLink tag={Link} to="/users">Gerenciar usuários</NavLink>
+        </NavItem>
 
         const toggler = <div>
             <Button color="warning" id="toggler" style={{ marginBottom: '1rem' }}>
@@ -24,12 +28,7 @@ export default class UserComponent extends Component {
                 <Card>
                     <CardBody style={{ color: "#ffff00", background: "#333" }}>
                         {perfil || ""}
-                        <NavItem>
-                            <NavLink tag={Link} to="/users">Gerenciar usuários</NavLink>
-                        </NavItem>
-                        <NavItem>
-                            <NavLink tag={Link} to="/receipts">Alterar senha</NavLink>
-                        </NavItem>
+                        {perfil === 'administrador' ? gerenciarUsuarios : ""}
                         <NavItem>
                             <a href="/" style={{ color: "#ffff00", background: "#333", textDecoration: "none" }} onClick={this.logout}>Sair</a>
                         </NavItem>

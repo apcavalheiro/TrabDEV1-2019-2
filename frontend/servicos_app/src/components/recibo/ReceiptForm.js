@@ -38,7 +38,6 @@ export default class ReceiptForm extends Component {
     }
     try {
       if (idReceipt != '') {
-        console.log("update" + idReceipt)
         await updateReceipt(idReceipt, recibo)
       } else {
         await createReceipt(recibo)
