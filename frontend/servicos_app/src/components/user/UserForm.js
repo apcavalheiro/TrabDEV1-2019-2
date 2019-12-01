@@ -71,7 +71,7 @@ export default class ClientForm extends Component {
   }
 
   render() {
-    let { nome, login, permissao, errorMessage } = this.state
+    let { nome, login, permissao, errorMessage,idUser } = this.state
 
     return (
       <Container>
@@ -93,7 +93,7 @@ export default class ClientForm extends Component {
             errorMessage="Campo Obrigátorio!"
             value={permissao || ''} onChange={this.handleChange} required>
             <option value=""></option>
-            <option value="usuario">Usuário do Sistema</option>
+            <option value="atendente">Usuário do Sistema</option>
             <option value="administrador">Administrador do Sistema</option>
             ))}
           </AvField>
@@ -106,7 +106,7 @@ export default class ClientForm extends Component {
           <div className="float-right">
             <Button type="button" onClick={this.handleClear} color="info" >Cancelar</Button>
             {' '}
-            <Button color="success">Cadastrar</Button>
+            <Button color="success">{idUser ? "Atualizar" : "Cadastrar"}</Button>
           </div>
         </AvForm>
       </Container>

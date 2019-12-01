@@ -68,7 +68,7 @@ export default class ClientForm extends Component {
   }
 
   render() {
-    let { nome, email, endereco, errorMessage } = this.state
+    let { nome, email, endereco, errorMessage, id } = this.state
     return (
       <Container>
         <Row>
@@ -91,7 +91,7 @@ export default class ClientForm extends Component {
           <div className="float-right">
             <Button type="button" onClick={this.handleClear} color="info" >Cancelar</Button>
             {' '}
-            <Button color="success">Cadastrar</Button>
+            <Button color="success">{id ? "Atualizar" : "Cadastrar"}</Button>
           </div>
         </AvForm>
       </Container>
