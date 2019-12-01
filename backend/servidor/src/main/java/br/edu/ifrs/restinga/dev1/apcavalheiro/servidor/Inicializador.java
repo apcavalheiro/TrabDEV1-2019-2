@@ -38,13 +38,13 @@ public class Inicializador {
 //                .encode("123456"));
 //
 //        Usuario administrador = new Usuario();
-//        usuarioSistema.setPermissoes(Arrays.asList("usuario"));
+//        usuarioSistema.setPermissoes(Arrays.asList("atendente"));
 //        Scanner scanner = new Scanner(System.in);
 //        System.out.println("Entre com o Nome do administrador do sistema: ");
 //        String nome = scanner.nextLine();
 //        System.out.println("Entre com o Login do administrador do sistema: ");
 //        String login = scanner.nextLine();
-//        System.out.println("Entre com a senha do administrador do sistema: ");
+//        System.out.println("Entre com a senha do administrador do sistema, minímo (6) caracteres: ");
 //        String senha = scanner.nextLine();
 //        administrador.setNome(nome);
 //        administrador.setLogin(login);

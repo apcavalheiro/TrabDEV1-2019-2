@@ -79,8 +79,8 @@ public class UsuarioService {
         usuario.setId(0);
         this.usuarioRN.isUsuario(usuario);
         this.usuarioRN.isLogin(usuario);
-        if (!usuario.getPermissoes().contains("administrador")) {
-            usuario.getPermissoes().add("usuario");
+        if (!usuario.getPermissoes().contains("administrador") && usuario.getPermissoes() == null) {
+            usuario.getPermissoes().add("atendente");
         }
         usuario.setSenha(ConfiguracaoSeguranca.PASSWORD_ENCODER.encode(usuario.getPass()));
         return this.usuarioRepository.save(usuario);

@@ -4,6 +4,8 @@ import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.entities.Recibo;
 import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.services.exception.InvalidRequest;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 @Component
 public class ReciboRN {
     public boolean isRecibo(Recibo recibo) {
