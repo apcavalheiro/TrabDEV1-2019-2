@@ -19,6 +19,12 @@ public class Cliente implements Serializable {
     public Cliente() {
     }
 
+    public Cliente(String nome, String email, String endereco) {
+        this.nome = nome;
+        this.email = email;
+        this.endereco = endereco;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getId() {

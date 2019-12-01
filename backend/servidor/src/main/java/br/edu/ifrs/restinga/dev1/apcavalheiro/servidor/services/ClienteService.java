@@ -5,6 +5,7 @@ import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.repositorys.ClienteReposi
 import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.services.exception.DataIntegrityException;
 import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.services.exception.InvalidRequest;
 import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.services.exception.ObjectNotFound;
+import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.services.rules.ClienteRN;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,9 @@ public class ClienteService {
 
     @Autowired
     private ClienteRepository clienteRepository;
+
+    @Autowired
+    private ClienteRN clienteRN;
 
     public Cliente buscarCliente(Integer id) {
         Optional<Cliente> cliente = this.clienteRepository.findById(id);
@@ -55,8 +59,8 @@ public class ClienteService {
         Cliente clienteSalvo = null;
         List<Cliente> clientesDb = this.clienteRepository.findAll();
         try {
-            this.isCliente(cliente);
-            this.existNameAndEmail(clientesDb, cliente);
+            this.clienteRN.isCliente(cliente);
+            this.clienteRN.existNameAndEmail(clientesDb, cliente);
             clienteSalvo = this.clienteRepository.save(cliente);
         } catch (NullPointerException e) {
             throw new InvalidRequest("Não é permitido cadastro nulo!" + e);
@@ -67,7 +71,7 @@ public class ClienteService {
     public Cliente atualizarCliente(Cliente cliente, Integer id) {
         Cliente clientesDb = this.buscarCliente(id);
         try {
-            this.isCliente(cliente);
+            this.clienteRN.isCliente(cliente);
             clientesDb.setEmail(cliente.getEmail());
             clientesDb.setEndereco(cliente.getEndereco());
             clientesDb.setNome(cliente.getNome());
@@ -76,30 +80,6 @@ public class ClienteService {
             throw new InvalidRequest("Não é permitido cadastro nulo!" + e);
         }
         return clientesDb;
-    }
-
-    private boolean isCliente(Cliente cliente) {
-        if (cliente.getEmail() == null || cliente.getEmail().equals("")) {
-            throw new InvalidRequest("O Campo E-Mail é obrigatório");
-        }
-        if (cliente.getNome() == null || cliente.getNome().equals("")) {
-            throw new InvalidRequest("O Campo Nome é obrigatório");
-        }
-        if (cliente.getEndereco() == null || cliente.getEndereco().equals("")) {
-            throw new InvalidRequest("O Campo Endereço é obrigatório");
-        }
-        return true;
-    }
-
-    private void existNameAndEmail(List<Cliente> clientesDb, Cliente cliente) {
-        for (Cliente clienteDb : clientesDb) {
-            if (clienteDb.getEmail().equals(cliente.getEmail())) {
-                throw new InvalidRequest("O Endereço de E-Mail já consta na base de dados!");
-            }
-            if (clienteDb.getNome().equals(cliente.getNome())) {
-                throw new InvalidRequest("O Cliente já consta na base de dados!");
-            }
-        }
     }
 }
 

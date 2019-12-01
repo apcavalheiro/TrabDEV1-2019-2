@@ -9,6 +9,7 @@ import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.services.exception.DataIn
 import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.services.exception.Forbidden;
 import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.services.exception.InvalidRequest;
 import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.services.exception.ObjectNotFound;
+import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.services.rules.UsuarioRN;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private UsuarioRN usuarioRN;
 
     public String gerarToken(Usuario usuario) throws UnsupportedEncodingException {
         Algorithm algorithm = Algorithm.HMAC256(ConfiguracaoSeguranca.SEGREDO);
@@ -53,9 +57,7 @@ public class UsuarioService {
     }
 
     public Usuario buscarUsuario(AuthUser authUser, Integer id) {
-
         Optional<Usuario> usuario = this.usuarioRepository.findById(id);
-        //isAllowed(authUser, usuario.get());
         return usuario.orElseThrow(() -> new ObjectNotFound("Usuário com id: " + id + " não encontrado!"));
     }
 
@@ -75,8 +77,8 @@ public class UsuarioService {
             throw new Forbidden("Não tem permissão para acessar esse recurso!");
         }
         usuario.setId(0);
-        this.isUsuario(usuario);
-        this.isLogin(usuario);
+        this.usuarioRN.isUsuario(usuario);
+        this.usuarioRN.isLogin(usuario);
         if (!usuario.getPermissoes().contains("administrador")) {
             usuario.getPermissoes().add("usuario");
         }
@@ -87,8 +89,8 @@ public class UsuarioService {
     public Usuario atualizarUsuario(AuthUser authUser, Usuario usuario, Integer id) {
         Usuario usuarioDb = this.buscarUsuario(authUser, id);
         try {
-            this.isAllowed(authUser, usuarioDb);
-            this.isUsuario(usuario);
+            this.usuarioRN.isAllowed(authUser, usuarioDb);
+            this.usuarioRN.isUsuario(usuario);
             if (id == usuarioDb.getId()) {
                 usuarioDb.setSenha(ConfiguracaoSeguranca.PASSWORD_ENCODER.encode(usuario.getPass()));
                 usuarioDb.setNome(usuario.getNome());
@@ -117,39 +119,6 @@ public class UsuarioService {
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityException("Não é possível excluir porque há recibo relacionado");
         }
-    }
-
-    private boolean isAllowed(AuthUser authUser, Usuario usuarioDb) {
-        if (!authUser.getUsuario().getPermissoes().contains("administrador") ||
-                usuarioDb.getLogin() == authUser.getUsername()) {
-            throw new Forbidden("Não tem permissão para acessar esse recurso!");
-        }
-        return true;
-    }
-
-    private boolean isLogin(Usuario usuario) {
-        Usuario usuarioExiste = this.usuarioRepository.findByLogin(usuario.getLogin());
-        if (usuarioExiste != null) {
-            throw new InvalidRequest("Este login já está cadastrado em nosso sistema!");
-        }
-        return true;
-    }
-
-    private boolean isUsuario(Usuario usuario) {
-        if (usuario.getNome() == null || usuario.getNome().equals("")) {
-            throw new InvalidRequest("O Campo Nome é obrigatório");
-        }
-        if (usuario.getLogin() == null || usuario.getLogin().equals("")) {
-            throw new InvalidRequest("O Campo Login é obrigatório");
-        }
-        if (usuario.getPass() == null || usuario.getPass().equals("")) {
-            throw new InvalidRequest("O Campo Senha é obrigatório");
-        }
-        if (usuario.getPass().length() < 6) {
-            throw new InvalidRequest("O Campo Senha deve conter no mínimo 6 caracteres!");
-        }
-
-        return true;
     }
 }
 

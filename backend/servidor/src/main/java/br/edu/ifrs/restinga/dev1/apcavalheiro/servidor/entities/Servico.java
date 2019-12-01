@@ -20,6 +20,13 @@ public class Servico implements Serializable {
     public Servico() {
     }
 
+    public Servico(String nome, String descricaoServico, String descricaoValor, Double valorBase) {
+        this.nome = nome;
+        this.descricaoServico = descricaoServico;
+        this.descricaoValor = descricaoValor;
+        this.valorBase = valorBase;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getId() {

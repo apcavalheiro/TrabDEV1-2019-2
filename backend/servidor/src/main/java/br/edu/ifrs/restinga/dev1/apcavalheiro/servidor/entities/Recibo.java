@@ -21,6 +21,14 @@ public class Recibo implements Serializable {
     public Recibo() {
     }
 
+    public Recibo(Date data, Double valor, Cliente cliente, Servico servico, Usuario usuario) {
+        this.data = data;
+        this.valor = valor;
+        this.cliente = cliente;
+        this.servico = servico;
+        this.usuario = usuario;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getId() {

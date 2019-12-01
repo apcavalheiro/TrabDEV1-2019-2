@@ -45,7 +45,8 @@ public class FiltroPorToken extends OncePerRequestFilter {
                 Usuario usuario = usuarioRepository.findById(id).get();
                 AuthUser usuarioAut = new AuthUser(usuario);
                 UsernamePasswordAuthenticationToken authToken
-                        = new UsernamePasswordAuthenticationToken(usuarioAut, null, usuarioAut.getAuthorities());
+                        = new UsernamePasswordAuthenticationToken(usuarioAut, null,
+                        usuarioAut.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         } catch (NoSuchElementException e) {

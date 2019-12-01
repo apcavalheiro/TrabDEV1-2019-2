@@ -6,6 +6,7 @@ import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.repositorys.ReciboReposit
 import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.repositorys.ServicoRepository;
 import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.services.exception.InvalidRequest;
 import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.services.exception.ObjectNotFound;
+import br.edu.ifrs.restinga.dev1.apcavalheiro.servidor.services.rules.ReciboRN;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,9 @@ public class ReciboService {
 
     @Autowired
     private ReciboRepository reciboRepository;
+
+    @Autowired
+    private ReciboRN reciboRN;
 
     public Recibo buscarRecibo(Integer id) {
         Optional<Recibo> recibo = this.reciboRepository.findById(id);
@@ -32,7 +36,7 @@ public class ReciboService {
     }
 
     public Iterable<Recibo> buscarRecibosPorNomeCliente(String nome) {
-        if(nome.equals("")){
+        if (nome.equals("")) {
             throw new ObjectNotFound("necessário um  nome para realizar a busca!");
         }
         List<Recibo> recibos = this.reciboRepository.findByCliente_NomeContaining(nome);
@@ -43,7 +47,7 @@ public class ReciboService {
     }
 
     public Iterable<Recibo> buscarRecibosPorEmailCliente(String email) {
-        if(email.equals("")){
+        if (email.equals("")) {
             throw new ObjectNotFound("necessário um  email para realizar a busca!");
         }
         List<Recibo> recibos = this.reciboRepository.findByCliente_EmailContaining(email);
@@ -77,8 +81,8 @@ public class ReciboService {
     public Recibo cadastrarRecibo(Recibo recibo, AuthUser authUser) {
         Recibo reciboSalvo = null;
         try {
-            isRecibo(recibo);
-            this.calcularValorRecibo(recibo);
+            this.reciboRN.isRecibo(recibo);
+            this.reciboRN.calcularValorRecibo(recibo);
             recibo.setUsuario(authUser.getUsuario());
             reciboSalvo = this.reciboRepository.save(recibo);
         } catch (NullPointerException e) {
@@ -89,36 +93,13 @@ public class ReciboService {
 
     public void atualizarRecibo(Recibo recibo, Integer id, AuthUser authUser) {
         try {
-            this.isRecibo(recibo);
+            this.reciboRN.isRecibo(recibo);
             recibo.setId(id);
             recibo.setUsuario(authUser.getUsuario());
-            this.calcularValorRecibo(recibo);
+            this.reciboRN.calcularValorRecibo(recibo);
             this.reciboRepository.save(recibo);
         } catch (NullPointerException e) {
             throw new InvalidRequest("Não é permitido cadastro nulo!");
         }
-    }
-
-    private boolean isRecibo(Recibo recibo) {
-        if (recibo.getData().equals("") || recibo.getData() == null) {
-            throw new InvalidRequest("O campo Data é obrigatório!");
-        }
-        if (recibo.getCliente().getId() == null) {
-            throw new InvalidRequest("É necessário um cliente para cadastrar o recibo!");
-        }
-        if (recibo.getServico().getId() == null) {
-            throw new InvalidRequest("É necessário um Serviço para cadastrar o recibo!");
-        }
-        if (recibo.getValor() <= 0 || recibo.getValor() == null) {
-            throw new InvalidRequest("É necessário um Valor para fechar o recibo!");
-        }
-        return true;
-    }
-
-    private boolean calcularValorRecibo(Recibo recibo) {
-        if (recibo.getServico().getValorBase() > recibo.getValor()) {
-            recibo.setValor(recibo.getServico().getValorBase());
-        }
-        return true;
     }
 }
